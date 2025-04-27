@@ -1,0 +1,10 @@
+
+fastapi
+uvicorn
+aiohttp
+httpx
+python-multipart
+pydantic
+pdfplumber
+PyMuPDF
+python-dotenv
