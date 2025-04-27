@@ -27,7 +27,7 @@
 ## Tech Stack
 
 - **Backend**: FastAPI (Python)
-- **AI Layer**: OpenAI, Claude, Huggingface models (via API)
+- **AI Layer**: OpendI, Claude, Huggingface models (via API)
 - **Document Parsing**: PDF/DOCX to text (`pdfminer`, `python-docx`)
 - **Database**: Supabase or Firebase
 - **Hosting**: Railway, Render, AWS
