@@ -63,3 +63,17 @@ async def evaluate_resume_content(resume_text: str) -> dict:
         }
     except Exception as e:
         raise Exception(f"Invalid response format from HuggingFace: {str(e)}")
+
+
+# New function 'analyze_resume' that is added to be compatible with your previous import request
+async def analyze_resume(resume_text: str) -> dict:
+    """
+    Analyzes the resume for overall evaluation (including research, leadership, etc.).
+    
+    Args:
+        resume_text (str): The resume content to be evaluated.
+    
+    Returns:
+        dict: The result containing an analysis of the resume.
+    """
+    return await evaluate_resume_content(resume_text)

@@ -1,5 +1,5 @@
 # app/services/openrouter_service.py
-# Handles communication with OpenRouter API for real-time quick risk alerts.
+# Handles communication with OpenRouter API for real-time quick risk alerts, document analysis, and checklist generation.
 
 import aiohttp
 import os
@@ -10,20 +10,10 @@ OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"  # Correct 
 async def generate_quick_alerts(document_type: str, document_text: str) -> dict:
     """
     Sends a document to OpenRouter API for a fast risk scan and returns quick alerts.
-
-    Args:
-        document_type (str): 'essay' or 'resume'.
-        document_text (str): Full text content of the document.
-
-    Returns:
-        dict: Contains instant risk alert results.
     """
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
         "Content-Type": "application/json",
-        # Optional headers if you want:
-        # "HTTP-Referer": "<YOUR_SITE_URL>",
-        # "X-Title": "<YOUR_SITE_NAME>",
     }
 
     prompt = f"""
@@ -44,7 +34,7 @@ async def generate_quick_alerts(document_type: str, document_text: str) -> dict:
     """
 
     payload = {
-        "model": "google/gemma-3-12b-it:free",  # Updated model
+        "model": "google/gemma-3-12b-it:free",
         "messages": [
             {
                 "role": "user",
@@ -56,7 +46,7 @@ async def generate_quick_alerts(document_type: str, document_text: str) -> dict:
                 ]
             }
         ],
-        "temperature": 0.3,  # You can tune this if needed
+        "temperature": 0.3,
     }
 
     async with aiohttp.ClientSession() as session:
@@ -66,12 +56,105 @@ async def generate_quick_alerts(document_type: str, document_text: str) -> dict:
             result = await response.json()
 
     try:
-        # Parse output assuming OpenRouter responds with a 'choices' list
         content = result['choices'][0]['message']['content']
-
         return {
             "message": content,
             "status": "success",
         }
     except Exception as e:
         raise Exception(f"Invalid response format from OpenRouter: {str(e)}")
+
+
+async def analyze_essay(document_text: str) -> dict:
+    """
+    Analyzes an essay deeply for quality, coherence, structure, grammar, and content relevance.
+
+    Args:
+        document_text (str): The essay text content.
+
+    Returns:
+        dict: Detailed analysis and improvement suggestions.
+    """
+    headers = {
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "Content-Type": "application/json",
+    }
+
+    prompt = f"""
+    You are a professional admissions essay reviewer.
+
+    Thoroughly evaluate this essay based on:
+    - Grammar and spelling
+    - Logical flow and structure
+    - Persuasiveness and clarity
+    - Content relevance to admissions goals
+    - Tone and impact
+
+    Provide a JSON response structured like:
+    {{
+        "strengths": [...],
+        "weaknesses": [...],
+        "overall_score": "out of 10",
+        "suggestions": [...]
+    }}
+
+    Essay to review:
+    {document_text}
+    """
+
+    payload = {
+        "model": "google/gemma-3-12b-it:free",
+        "messages": [
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": prompt
+                    }
+                ]
+            }
+        ],
+        "temperature": 0.4,  # Slightly more creative for essay feedback
+    }
+
+    async with aiohttp.ClientSession() as session:
+        async with session.post(OPENROUTER_API_URL, json=payload, headers=headers) as response:
+            if response.status != 200:
+                raise Exception(f"OpenRouter API error: {response.status}")
+            result = await response.json()
+
+    try:
+        content = result['choices'][0]['message']['content']
+        return {
+            "message": content,
+            "status": "success",
+        }
+    except Exception as e:
+        raise Exception(f"Invalid response format from OpenRouter: {str(e)}")
+
+
+async def generate_final_checklist(user_input: dict) -> dict:
+    """
+    Generates a final checklist based on user input or other criteria.
+
+    Args:
+        user_input (dict): A dictionary containing user-specific data to generate the checklist.
+
+    Returns:
+        dict: A checklist containing required actions or steps for the user.
+    """
+    # Placeholder logic for checklist generation. Update based on your needs.
+    checklist = {
+        "step_1": "Verify academic qualifications",
+        "step_2": "Complete application form",
+        "step_3": "Submit resume",
+        "step_4": "Schedule interview",
+        "step_5": "Prepare portfolio"
+    }
+
+    # Example: Modify the checklist based on user input
+    if user_input.get("has_experience"):
+        checklist["step_6"] = "Prepare for advanced technical interview"
+
+    return checklist
