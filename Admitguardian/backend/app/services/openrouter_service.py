@@ -5,7 +5,7 @@ import aiohttp
 import os
 
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
-OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"  # Example endpoint (adjust if needed)
+OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"  # Correct endpoint
 
 async def generate_quick_alerts(document_type: str, document_text: str) -> dict:
     """
@@ -21,6 +21,9 @@ async def generate_quick_alerts(document_type: str, document_text: str) -> dict:
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
         "Content-Type": "application/json",
+        # Optional headers if you want:
+        # "HTTP-Referer": "<YOUR_SITE_URL>",
+        # "X-Title": "<YOUR_SITE_NAME>",
     }
 
     prompt = f"""
@@ -41,9 +44,19 @@ async def generate_quick_alerts(document_type: str, document_text: str) -> dict:
     """
 
     payload = {
-        "model": "gpt-3.5-turbo",  # or whatever OpenRouter model you want (adjustable)
-        "messages": [{"role": "user", "content": prompt}],
-        "temperature": 0.3,
+        "model": "google/gemma-3-12b-it:free",  # Updated model
+        "messages": [
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": prompt
+                    }
+                ]
+            }
+        ],
+        "temperature": 0.3,  # You can tune this if needed
     }
 
     async with aiohttp.ClientSession() as session:
@@ -53,7 +66,7 @@ async def generate_quick_alerts(document_type: str, document_text: str) -> dict:
             result = await response.json()
 
     try:
-        # Parse output assuming response in the format you requested in prompt
+        # Parse output assuming OpenRouter responds with a 'choices' list
         content = result['choices'][0]['message']['content']
 
         return {
