@@ -5,8 +5,7 @@ from fastapi import APIRouter, HTTPException
 from app.models.request_models import ResumeUploadRequest, ResumeToneCheckRequest
 from app.models.response_models import ResumeAnalysisResponse, ToneCheckResponse
 from app.services.huggingface_service import analyze_resume
-from app.services.cohere_service import check_tone_and_grammar
-
+from app.services.cohere_service import analyze_tone_and_grammar
 router = APIRouter()
 
 @router.post("/upload-resume", response_model=ResumeAnalysisResponse)

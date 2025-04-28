@@ -5,7 +5,7 @@ from fastapi import APIRouter, HTTPException
 from app.models.request_models import EssayUploadRequest, EssayToneCheckRequest
 from app.models.response_models import EssayAnalysisResponse, ToneCheckResponse
 from app.services.openrouter_service import analyze_essay
-from app.services.cohere_service import check_tone_and_grammar
+from app.services.cohere_service import analyze_tone_and_grammar
 
 router = APIRouter()
 
