@@ -16,7 +16,7 @@ async def upload_essay(request: EssayUploadRequest):
     """
     try:
         # Send the essay text to the AI for analysis
-        analysis_result = analyze_essay(request.essay_text)
+        analysis_result = await analyze_essay(request.essay_text)  # <-- added await ✅
 
         return analysis_result
 
