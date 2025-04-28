@@ -5,7 +5,7 @@ import aiohttp
 import os
 
 COHERE_API_KEY = os.getenv("COHERE_API_KEY")
-COHERE_API_URL = "https://api.cohere.ai/v1/classify"  # Cohere classification endpoint
+COHERE_API_URL = "https://api.cohere.ai/v1/generate"  # Cohere generation endpoint
 
 async def analyze_tone_and_grammar(text: str) -> dict:
     """
@@ -33,7 +33,9 @@ async def analyze_tone_and_grammar(text: str) -> dict:
     """
 
     payload = {
-        "inputs": prompt,
+        "model": "command",  # Use "command" or "command-light" here, depending on your choice
+        "prompt": prompt,
+        "max_tokens": 300,  # Adjust based on the expected output length
     }
 
     async with aiohttp.ClientSession() as session:
@@ -45,7 +47,7 @@ async def analyze_tone_and_grammar(text: str) -> dict:
     try:
         # Extract relevant analysis from the response
         return {
-            "tone": result.get('tone', 'No tone analysis available'),
+            "tone": result.get('text', 'No tone analysis available'),  # Get generated text from response
             "grammar_warnings": result.get('grammar_warnings', []),
             "clarity_issues": result.get('clarity_issues', []),
         }
