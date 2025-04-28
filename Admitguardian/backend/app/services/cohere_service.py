@@ -1,6 +1,3 @@
-# cohere_service.py
-# Handles communication with Cohere API for tone and grammar checking of resume and essay
-
 import aiohttp
 import os
 
@@ -45,11 +42,13 @@ async def analyze_tone_and_grammar(text: str) -> dict:
             result = await response.json()
 
     try:
-        # Extract relevant analysis from the response
+        # Ensure the result contains the required fields
         return {
             "tone": result.get('text', 'No tone analysis available'),  # Get generated text from response
             "grammar_warnings": result.get('grammar_warnings', []),
             "clarity_issues": result.get('clarity_issues', []),
+            "tone_label": result.get('tone_label', 'No tone analysis available'),  # Ensure tone_label exists
+            "grammar_quality": result.get('grammar_quality', 'Good')  # Ensure grammar_quality exists
         }
     except Exception as e:
         raise Exception(f"Invalid response format from Cohere: {str(e)}")

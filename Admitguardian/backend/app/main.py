@@ -1,6 +1,9 @@
 # app/main.py
 # Main entry point for the FastAPI application
 
+from dotenv import load_dotenv
+load_dotenv() 
+
 from fastapi import FastAPI
 from app.api import essay, resume, checklist, alerts
 from app.models.request_models import EssayUploadRequest, ResumeUploadRequest

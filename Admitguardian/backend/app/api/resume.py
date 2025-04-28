@@ -6,6 +6,7 @@ from app.models.request_models import ResumeUploadRequest, ResumeToneCheckReques
 from app.models.response_models import ResumeAnalysisResponse, ToneCheckResponse
 from app.services.huggingface_service import analyze_resume
 from app.services.cohere_service import analyze_tone_and_grammar
+
 router = APIRouter()
 
 @router.post("/upload-resume", response_model=ResumeAnalysisResponse)
@@ -15,9 +16,14 @@ async def upload_resume(request: ResumeUploadRequest):
     """
     try:
         # Send the resume text to the HuggingFace model for analysis
-        analysis_result = analyze_resume(request.resume_text)
+        analysis_result = await analyze_resume(request.resume_text)
 
-        return analysis_result
+        # Check if the result is a list and handle it accordingly
+        if isinstance(analysis_result, list):
+            # If it's a list, extract relevant data (this could be changed based on the actual response structure)
+            analysis_result = analysis_result[0]  # Modify this based on actual response structure
+
+        return analysis_result  # Return the result, which should be a dictionary or object
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error analyzing resume: {str(e)}")
@@ -29,10 +35,10 @@ async def resume_tone_check(request: ResumeToneCheckRequest):
     Analyze the tone and grammar quality of the uploaded resume.
     """
     try:
-        # Send the resume text to Cohere API for tone and grammar evaluation
-        tone_result = check_tone_and_grammar(request.resume_text)
+        # Ensure that the async function analyze_tone_and_grammar is awaited
+        tone_result = await analyze_tone_and_grammar(request.resume_text)  # Await the async function
 
-        return tone_result
+        return tone_result  # Return the result, which should be a dictionary or object
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error checking resume tone: {str(e)}")
