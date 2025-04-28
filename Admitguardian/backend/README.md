@@ -35,6 +35,7 @@ backend/
 │
 ├── app/
 │   ├── api/
+|   |---|---alerts.py
 │   │   ├── essay.py          # Essay upload + analyze endpoints
 │   │   ├── resume.py         # Resume upload + analyze endpoints
 │   │   └── checklist.py      # Final checklist generator
