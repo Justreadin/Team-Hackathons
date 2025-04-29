@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <style>
+    /* Basics */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', 'Space Grotesk', sans-serif;
+}
+
+body {
+  background: linear-gradient(135deg, #0a0a23, #000010);
+  color: #ffffff;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 50px;
+}
+
+/* Checklist Container */
+.checklist-container {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid #00f5d4;
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+  animation: fadeIn 1s ease;
+}
+
+/* Headings */
+h1 {
+  font-size: 2rem;
+  margin-bottom: 15px;
+  color: #00f5d4;
+}
+
+.subheading {
+  font-size: 1rem;
+  margin-bottom: 30px;
+  color: #ccc;
+}
+
+/* Checklist */
+ul#dynamicChecklist {
+  text-align: left;
+  margin-bottom: 30px;
+}
+
+ul#dynamicChecklist li {
+  margin-bottom: 15px;
+  padding: 10px 15px;
+  background: rgba(0, 245, 212, 0.1);
+  border-left: 4px solid #00f5d4;
+  border-radius: 8px;
+}
+
+/* Button */
+button {
+  background-color: #00f5d4;
+  color: #000010;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: fadeIn 0.3s;
+}
+
+button:hover {
+  background-color: #00c9b7;
+}
+.secondary-btn {
+  padding: 12px 24px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: 0.3s;
+  background: transparent;
+  color: #00f5d4;
+  border: 2px solid #00f5d4;
+}
+.secondary-btn:hover {
+  background: #00f5d4;
+  color: #0a0a23;
+}
+/* Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Final Checklist</title>
+</head>
+<body>
+
+  <div class="checklist-container">
+
+    <h1>Final Submission Checklist</h1>
+    <p class="subheading">Here's everything you should fix before submitting!</p>
+
+    <ul id="dynamicChecklist">
+      <!-- Checklist items will be inserted here dynamically -->
+    </ul>
+
+    <button onclick="regenerateChecklist()">Regenerate Checklist</button>
+    <a href="index.html"><button class="secondary-btn">Back to home</button></a>
+  </div>
+  <script>
+    // Sample detected risks (normally you'd get this from backend AI)
+const detectedRisks = [
+  "Essay too short",
+  "No research experience mentioned",
+  "Tone too casual",
+  "Weak opening paragraph",
+  "Cliché phrases detected"
+];
+
+// Mapping from risks to personalized checklist items
+const checklistMap = {
+  "Essay too short": "Expand your essay to show more depth and commitment.",
+  "No research experience mentioned": "Add a paragraph about past research or projects.",
+  "Tone too casual": "Rewrite using more professional and academic language.",
+  "Weak opening paragraph": "Craft a powerful, story-driven opening that hooks the reader.",
+  "Cliché phrases detected": "Remove overused phrases and personalize your story."
+};
+
+// Generate checklist dynamically
+function generateChecklist() {
+  const checklist = document.getElementById('dynamicChecklist');
+  checklist.innerHTML = '';
+
+  detectedRisks.forEach(risk => {
+    const item = document.createElement('li');
+    item.textContent = checklistMap[risk] || `Fix: ${risk}`;
+    checklist.appendChild(item);
+  });
+}
+
+// Button to regenerate (simulate re-evaluation)
+function regenerateChecklist() {
+  alert("Checklist regenerated!");
+  generateChecklist();
+}
+
+// On page load
+window.onload = generateChecklist;
+  </script>
+</body>
+</html>
