@@ -17,6 +17,31 @@ body {
   overflow: hidden;
 }
 
+.options{
+  padding-bottom: 50px;
+}
+
+.options button{
+  margin: 0px 1px;
+  background: #0a0a23;
+  color: #00f5d4;
+  border: 2px solid #00f5d4;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+  float: right;
+}
+
+.options button:hover, .options button:focus {
+  outline: none;
+  background: #00f5d4;
+  color: #0a0a23;
+}
+
 /* Page Layout */
 .page-container {
   display: flex;
@@ -168,15 +193,15 @@ body {
   100% {box-shadow: 0 0 0 0 rgba(0, 245, 212, 0);}
 }
 
-@media screen and (max-width:800px){
+@media screen and (max-width:1200px){
   .page-container {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-}
-body {
-  overflow: visible;
-}
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  body {
+    overflow: visible;
+  }
 }
   </style>
   <meta charset="UTF-8">
@@ -189,7 +214,13 @@ body {
 
     <!-- Left: Document Upload/Editor Area -->
     <div class="upload-area">
-      <h2>Upload Your Essay or Resume</h2>
+      <div class="options">
+        <button class="SoP" onclick="makeactive(this)">Statement Of Purpose (SoP)</button>
+        <button class="CV" onclick="makeactive(this)">Curriculum Vitae (CV)</button>
+        <button class="letter" onclick="makeactive(this)">Letter</button>
+        <button class="resume" autofocus onclick="makeactive(this)">Resume</button>
+      </div>
+      <h2>Upload Your Resume</h2>
       
       <div class="dropzone" id="dropzone">
         <p>Drag & Drop your file here</p>
@@ -198,7 +229,7 @@ body {
       </div>
 
       <textarea id="text-editor" class="text-editor" placeholder="Or paste your essay here..."></textarea>
-      <a href="dashboard.html" class="dashboard-link"><button class="dashboard-btn">View Potential Risks</button></a>
+      <a href="dashboard.html" class="dashboard-link"><button class="dashboard-btn">View Potential Risks &#8594;</button></a>
     </div>
 
     <!-- Right: Live Risk Detection Sidebar -->
@@ -213,7 +244,9 @@ body {
 
   </div>
 <script>
-  // upload.js
+function makeactive(self) {
+  document.getElementsByTagName("h2")[0].innerHTML = `Upload Your ${self.innerHTML}`
+}
 
 const editor = document.getElementById('text-editor');
 const alertsList = document.getElementById('alerts-list');
