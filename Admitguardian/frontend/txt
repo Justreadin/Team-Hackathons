@@ -1,0 +1,645 @@
+now for the frontend of the ai saas app, i want to use this image as a reference, i want to create a visual apeealing, ut of the world ui design, state of the art fonts andd charts, aesthetic use of tailwind css and bootstrap with their cdns and other cdns with a visual dashboard using chartjs, subtle animations, for the frontend and should be similar ro the image, this is the structure of my backend, the sections should be indicated with cards e.g upload document, evaluate risk,  check risk score, check improvements, fatal risk simulator:
+
+ backend/
+│
+├── app/
+│   ├── api/
+|   |---|---alerts.py
+│   │   ├── essay.py          # Essay upload + analyze endpoints
+│   │   ├── resume.py         # Resume upload + analyze endpoints
+│   │   └── checklist.py      # Final checklist generator
+│   │
+│   ├── services/
+│   │   ├── openrouter_service.py  # Handles OpenRouter API calls
+│   │   ├── huggingface_service.py # Handles Huggingface API calls
+│   │   └── cohere_service.py      # Handles Cohere API calls
+│   │
+│   ├── utils/
+│   │   ├── scoring.py        # Smart scoring logic
+│   │   └── parsers.py        # PDF-to-text or doc parsing
+│   │
+│   ├── models/
+│   │   ├── request_models.py # Pydantic schemas for requests
+│   │   └── response_models.py # Pydantic schemas for responses
+│   │
+│   └── main.py               # FastAPI app entry
+│
+├── requirements.txt          # FastAPI, aiohttp, pdfplumber, etc.
+├── README.md                  # Project setup notes
+
+
+
+so the frontend should have sections for this:
+
+ **Document Upload:** Accepts SOPs, resumes (PDF, DOCX, TXT formats).
+- **Risk Detection:** Evaluates essay and resume quality, detects critical flaws.
+- **AI-Powered Scoring:**
+  - SOP evaluated for structure, relevance, and red flags.
+    - Resume assessed for academic strength and leadership evidence.
+    - **Tone and Grammar Checks:** Improves tone, clarity, and language quality using Cohere.
+    - **Live Risk Alerts:** Optional real-time monitoring of critical application errors during typing.
+    - **Final Improvement Checklist:** Consolidated personalized feedback for applicants.
+Fatal error simulator: enable users to inject common but critical mistakes into their essay or cv to see how the ai react, after uploading a document, user sees a toggle: "Simulate common mistakes"
+
+on toggle, user can choose 1-2 error types:
+vague goals(removes or blurs research/career goals)
+overly casual tone (adds phrases like "super pumped", contracdictions)
+
+
+this are the initial html, css and javascript code for it:
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <style>
+    /* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', 'Space Grotesk', sans-serif;
+}
+
+body {
+  background: radial-gradient(circle at center, #0a0a23 0%, #000010 100%);
+  color: #ffffff;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Main Container */
+.container {
+  text-align: center;
+  animation: fadeIn 1.5s ease;
+}
+
+/* Shield Animation */
+.shield img {
+  width: 120px;
+  height: 120px;
+  margin-bottom: 20px;
+  animation: spin 8s linear infinite;
+  filter: drop-shadow(0 0 10px #00f5d4);
+}
+
+/* Headline */
+.headline {
+  font-size: 3rem;
+  font-weight: bold;
+  background: linear-gradient(90deg, #00f5d4, #c77dff);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 10px;
+}
+
+/* Tagline */
+.tagline {
+  font-size: 1.2rem;
+  color: #c0c0c0;
+  margin-bottom: 40px;
+}
+
+/* Buttons */
+.buttons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.primary-btn, .secondary-btn {
+  padding: 12px 24px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.primary-btn {
+  background: #00f5d4;
+  color: #0a0a23;
+  font-weight: bold;
+  box-shadow: 0 0 15px #00f5d4;
+}
+
+.secondary-btn {
+  background: transparent;
+  color: #00f5d4;
+  border: 2px solid #00f5d4;
+}
+
+/* Hover Effects */
+.primary-btn:hover {
+  background: #0a0a23;
+  color: #00f5d4;
+  box-shadow: 0 0 20px #00f5d4;
+}
+
+.secondary-btn:hover {
+  background: #00f5d4;
+  color: #0a0a23;
+}
+
+/* Animations */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Application's Bodyguard</title>
+</head>
+<body>
+
+  <div class="container">
+    <div class="shield">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Shield_icon.svg/2048px-Shield_icon.svg.png" alt="Shield Icon">
+    </div>
+
+    <h1 class="headline">Protect Your Future</h1>
+    <p class="tagline">Detect Mistakes. Maximize Success.</p>
+
+    <div class="buttons">
+      <a href="upload.html"><button class="primary-btn">Upload My Documents</button></a>
+      <button class="secondary-btn">Live Demo</button>
+    </div>
+  </div>
+
+</body>
+</html>
+
+dashboard:
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <style>
+    /* Reset and Basics */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', 'Space Grotesk', sans-serif;
+}
+
+body {
+  background: linear-gradient(135deg, #0a0a23, #000010);
+  color: #ffffff;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  flex-direction: column;
+}
+
+/* Dashboard Layout */
+.dashboard-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 40px;
+  width: 100%;
+  max-width: 1200px;
+}
+
+/* Card Style */
+.risk-score, .chart-container, .quick-wins {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid #00f5d4;
+  border-radius: 20px;
+  padding: 30px;
+  text-align: center;
+  animation: fadeIn 1.5s ease;
+}
+
+/* Texts */
+h2 {
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+}
+
+h3#score-text {
+  margin-top: 20px;
+  font-size: 1.5rem;
+  color: #00f5d4;
+}
+
+/* Quick Wins */
+.quick-wins ul {
+  list-style-type: none;
+  margin-top: 20px;
+}
+
+.quick-wins li {
+  background: rgba(0, 245, 212, 0.1);
+  margin-bottom: 10px;
+  padding: 10px 15px;
+  border-radius: 12px;
+  font-size: 1rem;
+  text-align: left;
+}
+
+/* Next Button */
+.checklist-link{
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10px;
+}
+.checklist-btn{  
+  margin-top: 10px;
+  background: #00f5d4;
+  color: #0a0a23;
+  font-weight: bold;
+  box-shadow: 0 0 15px #00f5d4;
+  padding: 12px 24px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.checklist-btn:hover {
+  background: #0a0a23;
+  color: #00f5d4;
+  box-shadow: 0 0 20px #00f5d4;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Risk Score Dashboard</title>
+
+  <!-- Chart.js for beautiful charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <div class="dashboard-container">
+
+    <!-- Main Risk Score -->
+    <div class="risk-score">
+      <h2>Overall Application Score</h2>
+      <canvas id="scoreGauge" width="200" height="200"></canvas>
+      <h3 id="score-text">Loading...</h3>
+    </div>
+
+    <!-- Strengths vs Weakness Pie Chart -->
+    <div class="chart-container">
+      <h2>Strengths vs Weaknesses</h2>
+      <canvas id="strengthsChart" width="300" height="300"></canvas>
+    </div>
+
+    <!-- Quick Wins Checklist -->
+    <div class="quick-wins">
+      <h2>Quick Wins</h2>
+      <ul id="quickWinsList">
+        <li>Fix essay introduction to show personal story.</li>
+        <li>Add detailed research project experience.</li>
+        <li>Use a more professional tone throughout.</li>
+      </ul>
+    </div>
+
+  </div>
+  <a href="checklist.html" class="checklist-link"><button class="checklist-btn">View Your Checklist</button></a>
+  <script>
+    // Score Gauge Setup
+const ctxGauge = document.getElementById('scoreGauge').getContext('2d');
+
+const gauge = new Chart(ctxGauge, {
+  type: 'doughnut',
+  data: {
+    datasets: [{
+      label: 'Risk Score',
+      data: [75, 25], // 75 = Good, 25 = Gap
+      backgroundColor: ['#00f5d4', '#1d1d3b'],
+      borderWidth: 0,
+    }]
+  },
+  options: {
+    circumference: 180,
+    rotation: -90,
+    cutout: '70%',
+    plugins: {
+      tooltip: { enabled: false },
+      legend: { display: false }
+    }
+  }
+});
+
+// Set the risk score text
+document.getElementById('score-text').innerText = '75% Safe';
+
+// Strengths vs Weaknesses Pie Chart
+const ctxStrengths = document.getElementById('strengthsChart').getContext('2d');
+
+const strengthsChart = new Chart(ctxStrengths, {
+  type: 'pie',
+  data: {
+    labels: ['Strengths', 'Weaknesses'],
+    datasets: [{
+      data: [65, 35],
+      backgroundColor: ['#00f5d4', '#ff4d6d']
+    }]
+  },
+  options: {
+    plugins: {
+      legend: {
+        labels: {
+          color: '#ffffff',
+          font: {
+            size: 14
+          }
+        }
+      }
+    }
+  }
+});
+  </script>
+
+</body>
+</html>
+upload.html:
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <style>
+    /* Reset and Basics */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', 'Space Grotesk', sans-serif;
+}
+
+body {
+  background: radial-gradient(circle at center, #0a0a23, #000010);
+  color: #ffffff;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Page Layout */
+.page-container {
+  display: flex;
+  height: 100vh;
+}
+
+/* Upload Area */
+.upload-area {
+  flex: 2;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  animation: fadeIn 1.5s ease;
+}
+
+.upload-area h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.dropzone {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px dashed #00f5d4;
+  padding: 40px;
+  border-radius: 20px;
+  text-align: center;
+  margin-bottom: 20px;
+  transition: 0.3s;
+}
+
+.dropzone:hover {
+  background: rgba(0, 245, 212, 0.1);
+  cursor: pointer;
+}
+
+.upload-btn {
+  margin-top: 10px;
+  background: #00f5d4;
+  color: #0a0a23;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 30px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.upload-btn:hover {
+  background: #0a0a23;
+  color: #00f5d4;
+  border: 2px solid #00f5d4;
+}
+
+/* Text Editor */
+.text-editor {
+  margin-top: 20px;
+  width: 100%;
+  height: 300px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid #00f5d4;
+  border-radius: 15px;
+  color: #ffffff;
+  padding: 20px;
+  font-size: 1rem;
+  resize: none;
+}
+
+.dashboard-link{
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10px;
+}
+.dashboard-btn{  
+  background: #00f5d4;
+  color: #0a0a23;
+  font-weight: bold;
+  box-shadow: 0 0 15px #00f5d4;
+  padding: 12px 24px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.dashboard-btn:hover {
+  background: #0a0a23;
+  color: #00f5d4;
+  box-shadow: 0 0 20px #00f5d4;
+}
+
+/* Risk Sidebar */
+.risk-sidebar {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.03);
+  border-left: 2px solid #00f5d4;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  animation: slideIn 1.5s ease;
+}
+
+.risk-sidebar h3 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: #00f5d4;
+}
+
+#alerts-list {
+  list-style: none;
+}
+
+.risk {
+  background: rgba(0, 245, 212, 0.08);
+  border-radius: 10px;
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  font-size: 1rem;
+  animation: pulse 2s infinite;
+}
+
+.risk.critical {
+  border-left: 5px solid #ff4d6d;
+}
+
+.risk.warning {
+  border-left: 5px solid #ffd166;
+}
+
+.risk.info {
+  border-left: 5px solid #00f5d4;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(100px);}
+  to { opacity: 1; transform: translateX(0);}
+}
+
+@keyframes pulse {
+  0% {box-shadow: 0 0 0 0 rgba(0, 245, 212, 0.4);}
+  70% {box-shadow: 0 0 0 10px rgba(0, 245, 212, 0);}
+  100% {box-shadow: 0 0 0 0 rgba(0, 245, 212, 0);}
+}
+  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload & Risk Detection</title>
+</head>
+<body>
+
+  <div class="page-container">
+
+    <!-- Left: Document Upload/Editor Area -->
+    <div class="upload-area">
+      <h2>Upload Your Essay or Resume</h2>
+      
+      <div class="dropzone" id="dropzone">
+        <p>Drag & Drop your file here</p>
+        <p>or</p>
+        <button class="upload-btn">Browse Files</button>
+      </div>
+
+      <textarea id="text-editor" class="text-editor" placeholder="Or paste your essay here..."></textarea>
+      <a href="dashboard.html" class="dashboard-link"><button class="dashboard-btn">View Potential Risks</button></a>
+    </div>
+
+    <!-- Right: Live Risk Detection Sidebar -->
+    <div class="risk-sidebar">
+      <h3>Instant Risk Alerts</h3>
+      <ul id="alerts-list">
+        <li class="risk critical">⚠️ Weak Introduction Detected</li>
+        <li class="risk warning">⚠️ Missing Research Experience</li>
+        <li class="risk info">ℹ️ Tone could be more formal</li>
+      </ul>
+    </div>
+
+  </div>
+<script>
+  // upload.js
+
+const editor = document.getElementById('text-editor');
+const alertsList = document.getElementById('alerts-list');
+
+let timeout = null;
+
+// Helper function to create a risk alert element
+function createRiskAlert(type, message) {
+  const li = document.createElement('li');
+  li.className = `risk ${type}`;
+  li.textContent = message;
+  return li;
+}
+
+// Basic risk detection rules
+function detectRisks(text) {
+  const risks = [];
+
+  // Example checks:
+  if (text.length < 100) {
+    risks.push({ type: 'critical', message: 'Essay is too short!' });
+  }
+  if (!text.toLowerCase().includes('research')) {
+    risks.push({ type: 'warning', message: 'No mention of research experience.' });
+  }
+  if ((text.match(/i am|my passion|i have always loved/gi) || []).length > 2) {
+    risks.push({ type: 'info', message: 'Too many cliché phrases detected.' });
+  }
+  if (text.split(' ').length < 150) {
+    risks.push({ type: 'warning', message: 'Essay is missing detailed examples.' });
+  }
+  if (text.includes('!!!') || text.includes('???')) {
+    risks.push({ type: 'critical', message: 'Too many informal punctuations.' });
+  }
+
+  return risks;
+}
+
+// Listen to typing events
+editor.addEventListener('input', () => {
+  clearTimeout(timeout);
+
+  timeout = setTimeout(() => {
+    const text = editor.value;
+    const risks = detectRisks(text);
+
+    // Clear current alerts
+    alertsList.innerHTML = '';
+
+    if (risks.length === 0) {
+      const safe = createRiskAlert('info', 'No major risks detected. Looking good!');
+      alertsList.appendChild(safe);
+    } else {
+      risks.forEach(risk => {
+        const alert = createRiskAlert(risk.type, `⚡ ${risk.message}`);
+        alertsList.appendChild(alert);
+      });
+    }
+
+  }, 1000); // wait 1 second after typing stops
+});
+</script>
+</body>
+</html>
+
+
+
+from all this give me the html, css and javascript files separately, don't forget it is an mvp. you can give me the full html first and ask me for the rest
