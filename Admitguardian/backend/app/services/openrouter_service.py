@@ -150,19 +150,76 @@ async def analyze_essay(document_text: str) -> dict:
         logger.error(f"Invalid AI response: {result}")
         raise ValueError("Unexpected response format from AI.") from e
 
-async def generate_final_checklist(user_input: dict) -> dict:
+async def generate_final_checklist(essay_text: str, resume_text: str, target_universities: list) -> dict:
     """
-    Generates a final checklist based on user input or other criteria.
+    Uses OpenRouter AI to generate a personalized final checklist for a top-tier university application.
     """
-    checklist = {
-        "step_1": "Verify academic qualifications",
-        "step_2": "Complete application form",
-        "step_3": "Submit resume",
-        "step_4": "Schedule interview",
-        "step_5": "Prepare portfolio"
+    headers = {
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "Content-Type": "application/json",
     }
 
-    if user_input.get("has_experience"):
-        checklist["step_6"] = "Prepare for advanced technical interview"
+    prompt = f"""
+    You are an expert university admissions advisor helping a student applying to these universities: {', '.join(target_universities)}.
 
-    return checklist
+    Based on the provided essay and resume below, create a comprehensive world-class final checklist of everything they must complete before submitting their application.
+    
+    Focus on these categories:
+    - Application content review (essay, resume, LORs, SOPs)
+    - Document formatting and proofreading
+    - School-specific customizations
+    - Submission portals and deadlines
+    - Extra steps for scholarships or financial aid
+    - Additional tips or last-minute checks
+
+    Respond in a JSON format like:
+    {{
+        "final_checklist": [
+            "Review essay for clarity and impact",
+            "Tailor resume for each university's focus",
+            "Ensure all recommendation letters are submitted",
+            ...
+        ],
+        "priority_notes": [
+            "Your essay is strong but may benefit from clearer storytelling",
+            "One university has an earlier deadline - prioritize it"
+        ]
+    }}
+
+    Essay:
+    {essay_text}
+
+    Resume:
+    {resume_text}
+    """
+
+    payload = {
+        "model": "google/gemma-3-12b-it:free",
+        "messages": [{"role": "user", "content": [{"type": "text", "text": prompt}]}],
+        "temperature": 0.4,
+    }
+
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.post(OPENROUTER_API_URL, json=payload, headers=headers) as response:
+                result = await response.json()
+                response.raise_for_status()
+    except aiohttp.ClientError as e:
+        logger.error(f"OpenRouter API network error: {str(e)}")
+        raise RuntimeError(f"Failed to connect to OpenRouter API: {str(e)}")
+
+    try:
+        content = result['choices'][0]['message']['content']
+        extracted_json = extract_json_from_ai_response(content)
+
+        if extracted_json:
+            return {
+                "final_checklist": extracted_json.get("final_checklist", []),
+                "priority_notes": extracted_json.get("priority_notes", [])
+            }
+        else:
+            raise ValueError("Failed to extract valid JSON from AI response.")
+
+    except (KeyError, IndexError, ValueError) as e:
+        logger.error(f"Invalid AI response format: {result}")
+        raise ValueError("Unexpected response format from AI.") from e
