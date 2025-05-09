@@ -76,7 +76,7 @@ backend/
 | POST   | `/evaluate/essay` | Run essay content through AI evaluation |
 | POST   | `/evaluate/resume` | Run resume through strength detection AI |
 | POST   | `/evaluate/tone` | Run tone and grammar analysis |
-| GET    | `/dashboard/score` | Retrieve full risk score and improvement suggestions |
+| POST    | `/dashboard/score` | Retrieve full risk score and improvement suggestions |
 | GET    | `/live-alerts` | (Optional) Live instant alerts during typing/upload |
 | GET    | `/final-checklist` | Generate final checklis
 

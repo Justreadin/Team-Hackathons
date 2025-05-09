@@ -1,4 +1,5 @@
 # In app/api/dashboard.py (new file)
+from http.client import HTTPException
 from fastapi import APIRouter
 from app.models.response_models import DashboardScoreResponse
 from app.utils.scoring import calculate_combined_risk_score
