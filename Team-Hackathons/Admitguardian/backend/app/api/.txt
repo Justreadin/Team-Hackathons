@@ -1,0 +1,7 @@
+| POST   | `/upload/essay`     | Upload and evaluate essay            |
+| POST   | `/upload/resume`    | Upload and evaluate resume           |
+| POST   | `/evaluate/essay`   | Run essay content through AI         |
+| POST   | `/evaluate/tone`    | Tone and grammar analysis            |
+| GET    | `/dashboard/score`  | Get risk score + suggestions         |
+| GET    | `/live-alerts`      | Live polling for red flags           |
+| GET    | `/final-checklist`  | Generate final checklist             |

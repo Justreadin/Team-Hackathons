@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <style>
+    /* Reset and Basics */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', 'Space Grotesk', sans-serif;
+}
+
+body {
+  background: radial-gradient(circle at center, #0a0a23, #000010);
+  color: #ffffff;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.options{
+  padding-bottom: 50px;
+}
+
+.options button{
+  margin: 0px 1px;
+  background: #0a0a23;
+  color: #00f5d4;
+  border: 2px solid #00f5d4;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+  float: right;
+}
+
+.options button:hover, .options button:focus {
+  outline: none;
+  background: #00f5d4;
+  color: #0a0a23;
+}
+
+/* Page Layout */
+.page-container {
+  display: flex;
+  height: 100vh;
+}
+
+/* Upload Area */
+.upload-area {
+  flex: 2;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  animation: fadeIn 1.5s ease;
+}
+
+.upload-area h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.dropzone {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px dashed #00f5d4;
+  padding: 40px;
+  border-radius: 20px;
+  text-align: center;
+  margin-bottom: 20px;
+  transition: 0.3s;
+}
+
+.dropzone:hover {
+  background: rgba(0, 245, 212, 0.1);
+  cursor: pointer;
+}
+
+.upload-btn {
+  margin-top: 10px;
+  background: #00f5d4;
+  color: #0a0a23;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 30px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.upload-btn:hover {
+  background: #0a0a23;
+  color: #00f5d4;
+  border: 2px solid #00f5d4;
+}
+
+/* Text Editor */
+.text-editor {
+  margin-top: 20px;
+  width: 100%;
+  height: 300px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid #00f5d4;
+  border-radius: 15px;
+  color: #ffffff;
+  padding: 20px;
+  font-size: 1rem;
+  resize: none;
+}
+
+.dashboard-link{
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10px;
+}
+.dashboard-btn{  
+  margin: 20px;
+  background: #00f5d4;
+  color: #0a0a23;
+  font-weight: bold;
+  box-shadow: 0 0 15px #00f5d4;
+  padding: 12px 24px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.dashboard-btn:hover {
+  background: #0a0a23;
+  color: #00f5d4;
+  box-shadow: 0 0 20px #00f5d4;
+}
+
+/* Risk Sidebar */
+.risk-sidebar {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.03);
+  border-left: 2px solid #00f5d4;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  animation: slideIn 1.5s ease;
+}
+
+.risk-sidebar h3 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: #00f5d4;
+}
+
+#alerts-list {
+  list-style: none;
+}
+
+.risk {
+  background: rgba(0, 245, 212, 0.08);
+  border-radius: 10px;
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  font-size: 1rem;
+  animation: pulse 2s infinite;
+}
+
+.risk.critical {
+  border-left: 5px solid #ff4d6d;
+}
+
+.risk.warning {
+  border-left: 5px solid #ffd166;
+}
+
+.risk.info {
+  border-left: 5px solid #00f5d4;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(100px);}
+  to { opacity: 1; transform: translateX(0);}
+}
+
+@keyframes pulse {
+  0% {box-shadow: 0 0 0 0 rgba(0, 245, 212, 0.4);}
+  70% {box-shadow: 0 0 0 10px rgba(0, 245, 212, 0);}
+  100% {box-shadow: 0 0 0 0 rgba(0, 245, 212, 0);}
+}
+
+@media screen and (max-width:1200px){
+  .page-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  body {
+    overflow: visible;
+  }
+}
+  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload & Risk Detection</title>
+</head>
+<body>
+
+  <div class="page-container">
+
+    <!-- Left: Document Upload/Editor Area -->
+    <div class="upload-area">
+      <div class="options">
+        <button class="SoP" onclick="makeactive(this)">Statement Of Purpose (SoP)</button>
+        <button class="CV" onclick="makeactive(this)">Curriculum Vitae (CV)</button>
+        <button class="letter" onclick="makeactive(this)">Letter</button>
+        <button class="resume" autofocus onclick="makeactive(this)">Resume</button>
+      </div>
+      <h2>Upload Your Resume</h2>
+      
+      <div class="dropzone" id="dropzone">
+        <p>Drag & Drop your file here</p>
+        <p>or</p>
+        <button class="upload-btn">Browse Files</button>
+      </div>
+
+      <textarea id="text-editor" class="text-editor" placeholder="Or paste your essay here..."></textarea>
+      <a href="dashboard.html" class="dashboard-link"><button class="dashboard-btn">View Potential Risks &#8594;</button></a>
+    </div>
+
+    <!-- Right: Live Risk Detection Sidebar -->
+    <div class="risk-sidebar">
+      <h3>Instant Risk Alerts</h3>
+      <ul id="alerts-list">
+        <li class="risk critical">⚠️ Weak Introduction Detected</li>
+        <li class="risk warning">⚠️ Missing Research Experience</li>
+        <li class="risk info">ℹ️ Tone could be more formal</li>
+      </ul>
+    </div>
+
+  </div>
+<script>
+function makeactive(self) {
+  document.getElementsByTagName("h2")[0].innerHTML = `Upload Your ${self.innerHTML}`
+}
+
+const editor = document.getElementById('text-editor');
+const alertsList = document.getElementById('alerts-list');
+
+let timeout = null;
+
+// Helper function to create a risk alert element
+function createRiskAlert(type, message) {
+  const li = document.createElement('li');
+  li.className = `risk ${type}`;
+  li.textContent = message;
+  return li;
+}
+
+// Basic risk detection rules
+function detectRisks(text) {
+  const risks = [];
+
+  // Example checks:
+  if (text.length < 100) {
+    risks.push({ type: 'critical', message: 'Essay is too short!' });
+  }
+  if (!text.toLowerCase().includes('research')) {
+    risks.push({ type: 'warning', message: 'No mention of research experience.' });
+  }
+  if ((text.match(/i am|my passion|i have always loved/gi) || []).length > 2) {
+    risks.push({ type: 'info', message: 'Too many cliché phrases detected.' });
+  }
+  if (text.split(' ').length < 150) {
+    risks.push({ type: 'warning', message: 'Essay is missing detailed examples.' });
+  }
+  if (text.includes('!!!') || text.includes('???')) {
+    risks.push({ type: 'critical', message: 'Too many informal punctuations.' });
+  }
+
+  return risks;
+}
+
+// Listen to typing events
+editor.addEventListener('input', () => {
+  clearTimeout(timeout);
+
+  timeout = setTimeout(() => {
+    const text = editor.value;
+    const risks = detectRisks(text);
+
+    // Clear current alerts
+    alertsList.innerHTML = '';
+
+    if (risks.length === 0) {
+      const safe = createRiskAlert('info', 'No major risks detected. Looking good!');
+      alertsList.appendChild(safe);
+    } else {
+      risks.forEach(risk => {
+        const alert = createRiskAlert(risk.type, `⚡ ${risk.message}`);
+        alertsList.appendChild(alert);
+      });
+    }
+
+  }, 1000); // wait 1 second after typing stops
+});
+</script>
+</body>
+</html>
