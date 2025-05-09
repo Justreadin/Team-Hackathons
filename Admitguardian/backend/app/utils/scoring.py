@@ -86,3 +86,24 @@ def calculate_final_risk_score(essay_score: int, resume_score: int) -> int:
     
     # Ensure the final score is within the 0-100 range
     return round(final_score)
+
+
+def calculate_combined_risk_score(essay_score: int = None, resume_score: int = None) -> int:
+    """
+    Combine essay and resume scores based on a percentage split.
+    If either essay or resume score is missing, use 100% weight for the available score.
+    """
+    if essay_score is not None and resume_score is not None:
+        # Combine both scores when both are available
+        combined_score = (essay_score * 0.6) + (resume_score * 0.4)
+    elif essay_score is not None:
+        # If only essay score is available, give it 100% weight
+        combined_score = essay_score
+    elif resume_score is not None:
+        # If only resume score is available, give it 100% weight
+        combined_score = resume_score
+    else:
+        # If neither score is available, return 0 as a fallback
+        combined_score = 0
+    
+    return max(0, min(combined_score, 100))  # Ensure the score is within 0-100

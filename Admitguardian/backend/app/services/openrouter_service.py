@@ -6,6 +6,7 @@ import os
 import logging
 import re
 import json
+from app.models.response_models import FinalChecklistResponse
 
 logger = logging.getLogger(__name__)
 
@@ -19,26 +20,22 @@ else:
 OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
 
 
-def extract_json_from_ai_response(ai_text: str):
-    """
-    Extracts JSON block from AI response text that contains a fenced ```json ... ``` section.
-    """
-    match = re.search(r'```json(.*?)```', ai_text, re.DOTALL)
-    if match:
-        json_str = match.group(1).strip()
-        try:
-            return json.loads(json_str)
-        except json.JSONDecodeError as e:
-            logger.error(f"Failed to parse extracted JSON: {e}")
-            return None
-    else:
-        logger.error("No JSON block found in AI response.")
-        return None
 
+def extract_json_from_ai_response(text: str) -> dict:
+    try:
+        # Attempt to extract the first {...} block
+        json_match = re.search(r'\{.*\}', text, re.DOTALL)
+        if not json_match:
+            raise ValueError("No JSON found in AI response.")
+        
+        json_str = json_match.group()
+        return json.loads(json_str)
+    except Exception as e:
+        raise ValueError(f"Failed to parse sanitized JSON: {str(e)}")
 
 async def generate_quick_alerts(document_type: str, document_text: str) -> dict:
     """
-    Sends a document to OpenRouter API for a fast risk scan and returns quick alerts.
+    Uses OpenRouter AI to scan the document and return critical risk alerts.
     """
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
@@ -46,19 +43,29 @@ async def generate_quick_alerts(document_type: str, document_text: str) -> dict:
     }
 
     prompt = f"""
-    You are an expert reviewer. Quickly scan this {document_type} and identify any immediate red flags such as:
-    - Major plagiarism risks
-    - Missing critical sections
-    - Poor formatting
-    - Any factor that would lead to immediate rejection
+    You are a top-tier admissions officer and professional reviewer known for detecting red flags in application materials.
 
-    Return a brief JSON object like:
+    Carefully but quickly analyze the following {document_type} and identify ONLY **serious and potentially disqualifying issues**.
+
+    Focus on:
+    - Plagiarism signals or generic overused phrases
+    - Missing sections (e.g., no objectives in resumes, no thesis in essays)
+    - Formatting issues that reduce readability or professionalism
+    - Tone mismatches or unprofessional writing
+    - Logical gaps, vague or unsupported claims
+    - Any issue that could cause immediate rejection at a competitive institution
+
+    Respond **only** in this JSON format:
     {{
-        "critical_alerts": [...],
-        "summary": "short summary of critical findings"
+        "critical_alerts": [
+            "The essay lacks a clear central theme",
+            "The resume is missing an education section",
+            ...
+        ],
+        "summary": "A brief, high-level summary of major red flags found"
     }}
 
-    Document:
+    Document to scan:
     {document_text}
     """
 
@@ -74,18 +81,24 @@ async def generate_quick_alerts(document_type: str, document_text: str) -> dict:
                 result = await response.json()
                 response.raise_for_status()
     except aiohttp.ClientError as e:
-        logger.error(f"OpenRouter API network error: {str(e)}")
-        raise RuntimeError(f"Failed to connect to OpenRouter API: {str(e)}")
+        logger.error(f"OpenRouter API error: {str(e)}")
+        raise RuntimeError(f"OpenRouter connection failed: {str(e)}")
 
     try:
-        content = result['choices'][0]['message']['content']
-        return {
-            "message": content,
-            "status": "success",
-        }
-    except (KeyError, IndexError) as e:
-        logger.error(f"Invalid OpenRouter API response: {result}")
-        raise ValueError("Unexpected response format received from OpenRouter API.") from e
+        content = result["choices"][0]["message"]["content"]
+        parsed_json = extract_json_from_ai_response(content)
+        
+        if parsed_json:
+            return {
+                "critical_alerts": parsed_json.get("critical_alerts", []),
+                "summary": parsed_json.get("summary", "No major issues found."),
+                "status": "success"
+            }
+        else:
+            raise ValueError("AI response did not include valid JSON.")
+    except (KeyError, IndexError, ValueError) as e:
+        logger.error(f"Error parsing OpenRouter response: {result}")
+        raise ValueError("Unexpected response format from AI.") from e
 
 async def analyze_essay(document_text: str) -> dict:
     headers = {
@@ -150,7 +163,7 @@ async def analyze_essay(document_text: str) -> dict:
         logger.error(f"Invalid AI response: {result}")
         raise ValueError("Unexpected response format from AI.") from e
 
-async def generate_final_checklist(essay_text: str, resume_text: str, target_universities: list) -> dict:
+async def generate_final_checklist(essay_text: str, resume_text: str, target_universities: list) -> FinalChecklistResponse:
     """
     Uses OpenRouter AI to generate a personalized final checklist for a top-tier university application.
     """
@@ -160,10 +173,12 @@ async def generate_final_checklist(essay_text: str, resume_text: str, target_uni
     }
 
     prompt = f"""
+    Return only valid JSON without any markdown code fences (no ```json).
+
     You are an expert university admissions advisor helping a student applying to these universities: {', '.join(target_universities)}.
 
     Based on the provided essay and resume below, create a comprehensive world-class final checklist of everything they must complete before submitting their application.
-    
+
     Focus on these categories:
     - Application content review (essay, resume, LORs, SOPs)
     - Document formatting and proofreading
@@ -172,18 +187,20 @@ async def generate_final_checklist(essay_text: str, resume_text: str, target_uni
     - Extra steps for scholarships or financial aid
     - Additional tips or last-minute checks
 
-    Respond in a JSON format like:
+    You MUST return only raw JSON strictly. Do NOT include markdown code blocks, triple backticks, or any extra text. 
+    Only respond with a single valid JSON object as shown in the example below.:
     {{
-        "final_checklist": [
+        "checklist": [
             "Review essay for clarity and impact",
             "Tailor resume for each university's focus",
             "Ensure all recommendation letters are submitted",
             ...
         ],
-        "priority_notes": [
+        "critical_warnings": [
             "Your essay is strong but may benefit from clearer storytelling",
             "One university has an earlier deadline - prioritize it"
-        ]
+        ],
+        "summary": "This checklist summarizes the final steps to take to ensure a high-quality application. Make sure to review your documents carefully and follow up with your recommenders."
     }}
 
     Essay:
@@ -213,13 +230,16 @@ async def generate_final_checklist(essay_text: str, resume_text: str, target_uni
         extracted_json = extract_json_from_ai_response(content)
 
         if extracted_json:
-            return {
-                "final_checklist": extracted_json.get("final_checklist", []),
-                "priority_notes": extracted_json.get("priority_notes", [])
-            }
+            return FinalChecklistResponse(
+                checklist=extracted_json.get("checklist", []),
+                critical_warnings=extracted_json.get("critical_warnings", []),
+                summary=extracted_json.get("summary", ""),
+                download_text=None,  # Add this if needed to format a downloadable text
+                generated_by="openrouter/google/gemma-3-12b-it",  # Adjust based on model used
+                generation_time=datetime.utcnow()
+            )
         else:
             raise ValueError("Failed to extract valid JSON from AI response.")
-
     except (KeyError, IndexError, ValueError) as e:
         logger.error(f"Invalid AI response format: {result}")
         raise ValueError("Unexpected response format from AI.") from e

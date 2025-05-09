@@ -2,7 +2,7 @@
 # Pydantic models for structuring the responses sent from the FastAPI app
 
 from pydantic import BaseModel, Field
-from typing import List, Optional
+from typing import List, Optional, Dict
 from datetime import datetime
 
 class EssayAnalysisResponse(BaseModel):
@@ -47,11 +47,18 @@ class ResumeAnalysisResponse(BaseModel):
     model_used: Optional[str] = Field(default="google/flan-t5-large", description="Hugging Face model used.")
     evaluation_time: Optional[datetime] = Field(default_factory=datetime.utcnow, description="Timestamp of evaluation.")
 
+class ChecklistItem(BaseModel):
+    item: str
+    importance: str = Field(..., description="One of: 'critical', 'recommended', 'optional'")
+    source: str = Field(..., description="Whether this item came from the essay, resume, or both")
+
 class FinalChecklistResponse(BaseModel):
-    """
-    Response model for the final checklist.
-    """
-    checklist_items: List[str]  # List of checklist items for improvement.
+    checklist: List[ChecklistItem] = Field(..., description="List of checklist items to address")
+    critical_warnings: List[str] = Field(default=[], description="Major red flags or issues")
+    summary: str = Field(..., description="Summary of the checklist purpose and findings")
+    download_text: Optional[str] = Field(None, description="Plaintext version of checklist for download")
+    generated_by: Optional[str] = Field(default="openrouter/gpt-4", description="Model used")
+    generation_time: Optional[datetime] = Field(default_factory=datetime.utcnow)
 
 class DocumentUploadResponse(BaseModel):
     """
@@ -70,3 +77,23 @@ class ToneCheckResponse(BaseModel):
     clarity_level: str  # Clarity assessment (e.g., "Clear", "Somewhat Clear", "Unclear").
     summary: str  # One-sentence summary of the tone and grammar analysis.
     suggestions: Optional[List[str]] = None  # Optional list of suggestions for improvements.
+
+
+class DashboardScoreResponse(BaseModel):
+    combined_score: int
+    essay_score: int
+    resume_score: int
+    suggestions: List[str]
+    essay_breakdown: Dict[str, int]  # e.g., Clarity, Grammar, Tone
+    resume_breakdown: Dict[str, int]  # e.g., Relevance, Structure, Skills
+
+class QuickAlertResponse(BaseModel):
+    critical_alerts: List[str]
+    summary: str
+    status: str
+
+
+class DocumentUploadRequest(BaseModel):
+    document_type: str  # e.g., 'resume' or 'essay'
+    document_text: str
+

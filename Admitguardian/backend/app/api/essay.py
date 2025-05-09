@@ -2,13 +2,18 @@ from fastapi import APIRouter, HTTPException
 from app.models.request_models import EssayUploadRequest
 from app.models.response_models import EssayAnalysisResponse
 from app.models.response_models import EssayEvaluationResponse
+
+# Import services for external API handling (no change here)
 from app.services.openrouter_service import analyze_essay
 from app.services.cohere_service import analyze_tone_and_grammar
-from app.services.essay_processing_service import preprocess_essay
-import asyncio
+
+
+from app.api.storage import temp_storage
+
 
 router = APIRouter()
 
+# Calculation of risk score based on clarity, grammar, and tone
 def calculate_risk_score(grammar_warnings, clarity_issues, tone):
     risk_score = 0
     if grammar_warnings:
@@ -26,94 +31,83 @@ def calculate_risk_score(grammar_warnings, clarity_issues, tone):
 @router.post("/upload", response_model=EssayAnalysisResponse)
 async def upload_essay(request: EssayUploadRequest):
     try:
-        # Step 1: Preprocess the essay text
-        processed_data = preprocess_essay(request.essay_text)
-        print("Processed data:", processed_data)
-
-        # Step 2: Analyze the preprocessed essay
-        score_task = analyze_essay(processed_data["summary"])  # Using summary for analysis
-        tone_task = analyze_tone_and_grammar(processed_data["summary"])  # Using summary for tone/grammar
-        score_result, tone_result = await asyncio.gather(score_task, tone_task, return_exceptions=True)
-
-        if "summary" not in processed_data or not processed_data["summary"]:
-            raise HTTPException(status_code=400, detail="Summary generation failed.")
-
-        # If any task failed, handle exceptions
-        if isinstance(score_result, Exception):
-            raise HTTPException(status_code=500, detail=f"Error in scoring: {score_result}")
-        if isinstance(tone_result, Exception):
-            raise HTTPException(status_code=500, detail=f"Error in tone/grammar analysis: {tone_result}")
-
-        # Step 3: Extract relevant details from analysis results
-        score = score_result.get("risk_score", 0)
-        strengths = score_result.get("strengths", [])
-        weaknesses = score_result.get("weaknesses", [])
-        suggestions = score_result.get("suggested_improvements", [])
-        red_flags = score_result.get("red_flags", [])
-
-        tone = tone_result.get("tone", "Unknown")
-        grammar_warnings = tone_result.get("grammar_warnings", [])
-        clarity_issues = tone_result.get("clarity_issues", [])
-
-        # Step 4: Calculate risk score
-        risk_score = calculate_risk_score(grammar_warnings, clarity_issues, tone)
-
-        return {
-            "score": score,
-            "strengths": strengths,
-            "weaknesses": weaknesses,
-            "suggestions": suggestions,
-            "red_flags": red_flags,
-            "tone": tone,
-            "grammar_warnings": grammar_warnings,
-            "clarity_issues": clarity_issues,
-            "tone_label": tone_result.get("tone_label", "N/A"),
-            "grammar_quality": tone_result.get("grammar_quality", "Good"),
-            "risk_score": risk_score,
-            "keywords": processed_data["keywords"],  # Include extracted keywords
-            "summary": processed_data["summary"]  # Include the summarized version of the essay
+        # Preprocessing and dummy data for simulation
+        processed_data = {
+            "summary": "This is a dummy summary.",
+            "keywords": ["dummy", "keywords", "example"]
         }
 
-    except ValueError as ve:
-        raise HTTPException(status_code=502, detail=f"AI returned invalid format: {str(ve)}")
-    except RuntimeError as re:
-        raise HTTPException(status_code=503, detail=f"AI service unreachable: {str(re)}")
+        # Use external API for essay analysis
+        essay_analysis = await analyze_essay(request.essay_text)
+
+        # Extracting results from analyze_essay
+        score_result = essay_analysis
+
+        # Simulating the tone analysis results
+        tone_result = await analyze_tone_and_grammar(request.essay_text)
+
+        # Update temp_storage with essay details
+        temp_storage["essay_score"] = score_result["risk_score"]
+        temp_storage["essay_breakdown"]["clarity"] = 80
+        temp_storage["essay_breakdown"]["formal_tone"] = 50
+        temp_storage["essay_breakdown"]["grammar"] = 60
+        temp_storage["essay_breakdown"]["tone"] = 50
+        temp_storage["essay_suggestions"] = score_result["suggested_improvements"]
+
+        # Calculate risk score for essay using analysis results
+        risk_score = calculate_risk_score(
+            tone_result["grammar_warnings"], tone_result["clarity_issues"], tone_result["tone"]
+        )
+
+        return {
+            "score": score_result["risk_score"],
+            "strengths": score_result["strengths"],
+            "weaknesses": score_result["weaknesses"],
+            "suggestions": score_result["suggested_improvements"],
+            "red_flags": score_result["red_flags"],
+            "tone": tone_result["tone"],
+            "grammar_warnings": tone_result["grammar_warnings"],
+            "clarity_issues": tone_result["clarity_issues"],
+            "tone_label": tone_result["tone"],
+            "grammar_quality": "Good",
+            "risk_score": risk_score,
+            "keywords": processed_data["keywords"],
+            "summary": processed_data["summary"]
+        }
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
 
 @router.post("/evaluate", response_model=EssayEvaluationResponse)
 async def evaluate_essay(request: EssayUploadRequest):
     try:
-        # Preprocess the essay text
-        processed_data = preprocess_essay(request.essay_text)
+        # Preprocessing and dummy data for simulation
+        processed_data = {
+            "summary": "This is a dummy summary.",
+            "keywords": ["dummy", "keywords", "example"]
+        }
         
-        # Use the summary for analysis
-        result = await analyze_essay(processed_data["summary"])
-        
+        # Use external API for essay evaluation
+        essay_evaluation = await analyze_essay(request.essay_text)
+
+        # Simulating result extraction
+        result = essay_evaluation
+
         return {
-            "score": result.get("risk_score", 0),
-            "strengths": result.get("strengths", []),
-            "weaknesses": result.get("weaknesses", []),
-            "suggestions": result.get("suggested_improvements", []),
-            "red_flags": result.get("red_flags", []),
+            "score": result["risk_score"],
+            "strengths": result["strengths"],
+            "weaknesses": result["weaknesses"],
+            "suggestions": result["suggested_improvements"],
+            "red_flags": result["red_flags"],
             "tone": None,
             "grammar_warnings": [],
             "clarity_issues": [],
             "tone_label": None,
             "grammar_quality": None,
             "risk_score": 0,
-            "keywords": processed_data["keywords"],  # Include extracted keywords
-            "summary": processed_data["summary"]  # Include the summarized version of the essay
+            "keywords": processed_data["keywords"],
+            "summary": processed_data["summary"]
         }
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error during evaluation: {str(e)}")
-
-@router.get("/sample")
-async def sample_essay():
-    return {
-        "essay_text": (
-            "In today's globalized world, the importance of education cannot be overstated. "
-            "Education equips individuals with the skills and knowledge needed to thrive in a rapidly changing world."
-        )
-    }

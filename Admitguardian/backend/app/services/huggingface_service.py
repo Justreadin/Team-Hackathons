@@ -7,7 +7,9 @@ from datetime import datetime
 from typing import Dict
 
 HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_KEY")
-HUGGINGFACE_API_URL = "https://api-inference.huggingface.co/models/google/flan-t5-large"
+HUGGINGFACE_API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-v0.1"
+
+
 
 async def evaluate_resume_content(resume_text: str) -> Dict:
     headers = {
@@ -16,6 +18,8 @@ async def evaluate_resume_content(resume_text: str) -> Dict:
     }
 
     prompt = f"""
+    ou are a resume evaluator. Return ONLY a JSON object. Do not include explanations.
+
     Analyze the following resume and return a JSON object with:
     - strengths: [list of strengths],
     - weaknesses: [list of weaknesses],
