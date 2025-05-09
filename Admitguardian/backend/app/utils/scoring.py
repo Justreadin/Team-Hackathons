@@ -1,51 +1,109 @@
-# parsers.py
-# Utility functions for parsing documents (e.g., PDF to text)
+# scoring.py
+# Contains the logic for calculating risk scores based on various evaluations of essays and resumes
 
-import pdfplumber
-from docx import Document
-import os
-
-def parse_pdf(file_path: str) -> str:
+def calculate_essay_score(essay_analysis: dict) -> int:
     """
-    Parse a PDF file to extract text.
+    Calculate the risk score for the essay based on analysis results.
     
     Args:
-        file_path (str): Path to the PDF file.
+        essay_analysis (dict): A dictionary containing analysis results from AI evaluation.
     
     Returns:
-        str: Extracted text from the PDF.
+        int: A risk score on a scale of 0-100. Lower means more risky.
     """
-    text = ""
-    with pdfplumber.open(file_path) as pdf:
-        for page in pdf.pages:
-            text += page.extract_text()
-    return text
+    score = 100  # Start with a perfect score
+    
+    # Weights for different aspects of the essay
+    relevance_weight = 0.3
+    strength_weight = 0.3
+    tone_weight = 0.2
+    red_flags_weight = 0.2
+    
+    # Penalize based on weaknesses identified
+    if essay_analysis.get('relevance', 0) < 0.7:
+        score -= 20 * relevance_weight
+    if essay_analysis.get('strengths', 0) < 0.7:
+        score -= 20 * strength_weight
+    if essay_analysis.get('tone', 0) < 0.7:
+        score -= 20 * tone_weight
+    if essay_analysis.get('red_flags', []):
+        score -= 20 * red_flags_weight * len(essay_analysis['red_flags'])
+    
+    # Ensure the score is within the 0-100 range
+    score = max(0, min(100, score))
+    
+    return round(score)
 
-def parse_docx(file_path: str) -> str:
+def calculate_resume_score(resume_analysis: dict) -> int:
     """
-    Parse a DOCX file to extract text.
+    Calculate the risk score for the resume based on analysis results.
     
     Args:
-        file_path (str): Path to the DOCX file.
+        resume_analysis (dict): A dictionary containing analysis results from AI evaluation.
     
     Returns:
-        str: Extracted text from the DOCX file.
+        int: A risk score on a scale of 0-100. Lower means more risky.
     """
-    text = ""
-    doc = Document(file_path)
-    for paragraph in doc.paragraphs:
-        text += paragraph.text + "\n"
-    return text
+    score = 100  # Start with a perfect score
+    
+    # Weights for different aspects of the resume
+    research_weight = 0.3
+    leadership_weight = 0.3
+    publications_weight = 0.2
+    clarity_weight = 0.2
+    
+    # Penalize based on weaknesses identified
+    if resume_analysis.get('research_experience', 0) < 0.7:
+        score -= 20 * research_weight
+    if resume_analysis.get('leadership_experience', 0) < 0.7:
+        score -= 20 * leadership_weight
+    if resume_analysis.get('publications', 0) < 0.7:
+        score -= 20 * publications_weight
+    if resume_analysis.get('clarity', 0) < 0.7:
+        score -= 20 * clarity_weight
+    
+    # Ensure the score is within the 0-100 range
+    score = max(0, min(100, score))
+    
+    return round(score)
 
-def parse_text(file_path: str) -> str:
+def calculate_final_risk_score(essay_score: int, resume_score: int) -> int:
     """
-    Read a plain text file and return its content.
+    Combine the essay and resume scores to generate a final application risk score.
     
     Args:
-        file_path (str): Path to the text file.
+        essay_score (int): The calculated essay score.
+        resume_score (int): The calculated resume score.
     
     Returns:
-        str: Content of the text file.
+        int: The final combined risk score.
     """
-    with open(file_path, "r") as file:
-        return file.read()
+    # Weights for essay and resume in the final risk score
+    essay_weight = 0.5
+    resume_weight = 0.5
+    
+    final_score = (essay_score * essay_weight) + (resume_score * resume_weight)
+    
+    # Ensure the final score is within the 0-100 range
+    return round(final_score)
+
+
+def calculate_combined_risk_score(essay_score: int = None, resume_score: int = None) -> int:
+    """
+    Combine essay and resume scores based on a percentage split.
+    If either essay or resume score is missing, use 100% weight for the available score.
+    """
+    if essay_score is not None and resume_score is not None:
+        # Combine both scores when both are available
+        combined_score = (essay_score * 0.6) + (resume_score * 0.4)
+    elif essay_score is not None:
+        # If only essay score is available, give it 100% weight
+        combined_score = essay_score
+    elif resume_score is not None:
+        # If only resume score is available, give it 100% weight
+        combined_score = resume_score
+    else:
+        # If neither score is available, return 0 as a fallback
+        combined_score = 0
+    
+    return max(0, min(combined_score, 100))  # Ensure the score is within 0-100

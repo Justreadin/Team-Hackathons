@@ -1,8 +1,8 @@
-# GradSchool Risk Detector - Backend
+# Project Name - Backend
 
 > "The Smartest Grad School Application Risk Detector in the World"
 
-This repository contains the **backend** server for the GradSchool Risk Detector project — an AI-driven SaaS application that helps graduate school applicants detect hidden risks in their Statement of Purpose (SOP) and Resume documents, evaluate application quality, and maximize admission success.
+This is the backend server for **Project Name**, an AI-powered SaaS web application that helps graduate school applicants detect hidden flaws in their applications, improve their essays and resumes, and maximize their chances of success.
 
 ---
 
@@ -12,6 +12,7 @@ This repository contains the **backend** server for the GradSchool Risk Detector
 - [Folder Structure](#folder-structure)
 - [Core Functionalities](#core-functionalities)
 - [API Endpoints](#api-endpoints)
+- [AI Services Used](#ai-services-used)
 - [Environment Variables](#environment-variables)
 - [Running Locally](#running-locally)
 - [Deployment](#deployment)
@@ -22,166 +23,165 @@ This repository contains the **backend** server for the GradSchool Risk Detector
 ## Tech Stack
 
 - **Backend Framework:** FastAPI (Python 3.11+)
-- **AI Services:** OpenRouter (Mixtral 8x7B), HuggingFace (flan-t5-large), Cohere (Grammar/Tone Analysis)
-- **Parsing Libraries:** pdfminer.six, python-docx
-- **Database:** MySQL
-- **Containerization:** Docker (optional)
-- **Deployment Options:** Railway, AWS, Render
+- **AI APIs:** OpenRouter (Mixtral 8x7B), HuggingFace (flan-t5-large), Cohere (Grammar/Tone)
+- **Database:** Supabase (Optional for saving user document history)
+- **File Parsing:** `pdfminer.six`, `python-docx`
+- **Hosting Recommendation:** Railway, AWS, Render
 
 ---
 
 ## Folder Structure
+
+```
 backend/
 │
 ├── app/
-│   ├── api/
-|   |---|---alerts.py
-│   │   ├── essay.py          # Essay upload + analyze endpoints
-│   │   ├── resume.py         # Resume upload + analyze endpoints
-│   │   └── checklist.py      # Final checklist generator
-│   │
-│   ├── services/
-│   │   ├── openrouter_service.py  # Handles OpenRouter API calls
-│   │   ├── huggingface_service.py # Handles Huggingface API calls
-│   │   └── cohere_service.py      # Handles Cohere API calls
-│   │
-│   ├── utils/
-│   │   ├── scoring.py        # Smart scoring logic
-│   │   └── parsers.py        # PDF-to-text or doc parsing
-│   │
-│   ├── models/
-│   │   ├── request_models.py # Pydantic schemas for requests
-│   │   └── response_models.py # Pydantic schemas for responses
-│   │
-│   └── main.py               # FastAPI app entry
+│   ├── api/                # API route definitions
+│   ├── core/               # Settings, config, API keys
+│   ├── services/           # AI API interaction logic (OpenRouter, HuggingFace, Cohere)
+│   ├── models/             # Request and response schemas (Pydantic models)
+│   ├── utils/              # File parsing, scoring, helpers
+│   └── main.py             # FastAPI app instance
 │
-├── requirements.txt          # FastAPI, aiohttp, pdfplumber, etc.
-├── README.md                  # Project setup notes
-
+├── requirements.txt        # Python dependencies
+├── alembic/ (optional)      # Database migrations if needed
+└── README.md                # Documentation
+```
 
 ---
 
 ## Core Functionalities
 
-- **Document Upload:** Accepts SOPs, resumes (PDF, DOCX, TXT formats).
-- **Risk Detection:** Evaluates essay and resume quality, detects critical flaws.
-- **AI-Powered Scoring:**
-  - SOP evaluated for structure, relevance, and red flags.
-    - Resume assessed for academic strength and leadership evidence.
-    - **Tone and Grammar Checks:** Improves tone, clarity, and language quality using Cohere.
-    - **Live Risk Alerts:** Optional real-time monitoring of critical application errors during typing.
-    - **Final Improvement Checklist:** Consolidated personalized feedback for applicants.
-    - **MySQL Database:** (optional at this stage) Can store uploads, user profiles, analysis history.
+- **Upload Documents:** Accepts essay and/or CV uploads (PDF, DOCX, TXT).
+- **Instant AI Risk Evaluation:**
+  - Essay evaluation (relevance, strengths, risks) via OpenRouter.
+  - Resume evaluation (academic strength, leadership) via HuggingFace.
+  - Tone, grammar, and clarity checks via Cohere.
+- **Risk Scoring:**
+  - Each document scored from 0–100.
+  - Risk labels and suggested improvements generated.
+- **Real-Time Instant Alerts:**
+  - API supports live polling for immediate red flag detection.
+- **Final Personalized Checklist:**
+  - Aggregates all findings into a critical fixes checklist.
 
-    ---
+---
 
-    ## API Endpoints
+## API Endpoints
 
-    | Method | Endpoint | Description |
-    |:------:|:---------|:------------|
-    | POST   | `/api/v1/upload/essay`      | Upload and analyze SOP |
-    | POST   | `/api/v1/upload/resume`     | Upload and analyze Resume |
-    | POST   | `/api/v1/analyze/essay`     | Send SOP content for risk analysis |
-    | POST   | `/api/v1/analyze/resume`    | Send Resume content for evaluation |
-    | GET    | `/api/v1/dashboard/score`   | Fetch user's full risk evaluation |
-    | GET    | `/api/v1/checklist/fixes`   | Retrieve critical improvement checklist |
-    | GET    | `/api/v1/alerts/live`       | Fetch real-time alerts (Optional live mode) |
+| Method | Endpoint | Description |
+|:------:|:---------|:------------|
+| POST   | `/upload/essay` | Upload and evaluate essay |
+| POST   | `/upload/resume` | Upload and evaluate resume |
+| POST   | `/evaluate/essay` | Run essay content through AI evaluation |
+| POST   | `/evaluate/resume` | Run resume through strength detection AI |
+| POST   | `/evaluate/tone` | Run tone and grammar analysis |
+| GET    | `/dashboard/score` | Retrieve full risk score and improvement suggestions |
+| GET    | `/live-alerts` | (Optional) Live instant alerts during typing/upload |
+| GET    | `/final-checklist` | Generate final checklis
 
-    ---
 
-    ## Environment Variables
 
-    You need to create a `.env` file in the `/backend` directory.  
-    See `.env.example` for a template.
+/upload/essay → Upload essay file or text
 
-    ```env
-    # OpenRouter API key for LLM tasks
-    OPENROUTER_API_KEY=your_openrouter_api_key_here
+/upload/resume → Upload resume file or text
 
-    # Huggingface API key for resume evaluation
-    HUGGINGFACE_API_KEY=your_huggingface_api_key_here
+/evaluate/essay → Analyze essay (OpenRouter API + Cohere API)
 
-    # Cohere API key for tone and grammar analysis
-    COHERE_API_KEY=your_cohere_api_key_here
+/evaluate/resume → Analyze resume (Huggingface API + Cohere API)
 
-    # MySQL Database credentials
-    MYSQL_HOST=localhost
-    MYSQL_PORT=3306
-    MYSQL_USER=your_mysql_username
-    MYSQL_PASSWORD=your_mysql_password
-    MYSQL_DATABASE=gradschool_risk_detector
-    ```
+/final-checklist → Generate final checklist (OpenRouter API)
 
-    ---
+/dashboard/score → Calculate Smart Risk Score (backend logic)
 
-    ## Running Locally
+/live-alerts → Polling endpoint for instant sidebar red flags
+---
 
-    1. Clone the repository:
+## AI Services Used
 
-       ```bash
-          git clone https://github.com/yourorg/gradschool-risk-detector.git
-             cd gradschool-risk-detector/backend
-                ```
+- **OpenRouter (Mixtral 8x7B / Mistral 7B):**
+  - Essay evaluation: structure, strength, alignment, red flags.
+- **HuggingFace API (flan-t5-large):**
+  - Resume academic and leadership experience detection.
+- **Cohere API:**
+  - Tone analysis, grammar quality, and clarity checking.
 
-                2. Set up a virtual environment:
+> All AI interactions are optimized for fast responses and cost-free models (no card needed).
 
-                   ```bash
-                      python3 -m venv venv
-                         source venv/bin/activate  # On Windows: venv\Scripts\activate
-                            ```
+---
 
-                            3. Install dependencies:
+## Environment Variables
 
-                               ```bash
-                                  pip install -r requirements.txt
-                                     ```
+Create a `.env` file at the backend root with the following:
 
-                                     4. Create your `.env` file based on `.env.example`.
+```bash
+OPENROUTER_API_KEY=your_openrouter_api_key
+HUGGINGFACE_API_KEY=your_huggingface_api_key
+COHERE_API_KEY=your_cohere_api_key
+SUPABASE_URL=your_supabase_url (optional)
+SUPABASE_SERVICE_KEY=your_supabase_key (optional)
+```
 
-                                     5. Run the server:
+---
 
-                                        ```bash
-                                           uvicorn app.main:app --reload
-                                              ```
+## Running Locally
 
-                                              Server will be available at:
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourorg/project-name.git
+   cd backend
+   ```
 
-                                              ```
-                                              http://127.0.0.1:8000
-                                              ```
+2. Create and activate a virtual environment:
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
 
-                                              Interactive API documentation (Swagger UI) available at:
+3. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-                                              ```
-                                              http://127.0.0.1:8000/docs
-                                              ```
+4. Start the FastAPI server:
+   ```bash
+   uvicorn app.main:app --reload
+   ```
 
-                                              ---
+Server will be running at: `http://127.0.0.1:8000`
 
-                                              ## Deployment
+API docs available at: `http://127.0.0.1:8000/docs`
 
-                                              - **Railway.app** (for easy MySQL hosting + FastAPI)
-                                              - **Render.com**
-                                              - **AWS EC2 + RDS MySQL**
+---
 
-                                              Production tips:
+## Deployment
 
-                                              - Use `gunicorn` or `uvicorn` with multiple workers.
-                                              - Configure CORS properly.
-                                              - Secure your `.env` credentials.
-                                              - Setup HTTPS (SSL).
+Recommended platforms:
 
-                                              ---
+- **Railway.app** (easy for FastAPI + Postgres/Supabase setup)
+- **AWS EC2 / Lightsail**
+- **Render.com**
 
-                                              ## Contributing
+Production tips:
 
-                                              - Follow clean and modular coding practices.
-                                              - Keep service logic separated from API routes.
-                                              - Use clear and descriptive commit messages.
-                                              - Write simple and documented API endpoints.
+- Use `gunicorn` or `uvicorn` with workers.
+- Add HTTPS, CORS, and environment variables securely.
 
-                                              Pull requests are welcome!
+---
 
-                                              ---
+## Contributing
 
-                                              > "This backend is the engine that powers the world's smartest AI-driven graduate scno clue XRhool application risk detector — cc by cool ccblazing fast, accurate, and applicant-focused."
+Pull requests are welcome! Please follow clean code practices:
+
+- Separate service logic from controllers.
+- Document any new endpoints clearly.
+- Test API endpoints before submitting.
+
+---
+
+> "Project Name backend empowers the frontend by providing blazing-fast document analysis, AI-driven insights, and a structured, scalable API — the brain behind the world's smartest grad school application protector."
+
+
+
+
+this is the right one:
