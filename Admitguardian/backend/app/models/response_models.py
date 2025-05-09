@@ -67,4 +67,6 @@ class ToneCheckResponse(BaseModel):
     """
     tone_label: str  # Overall tone detected (e.g., "Formal", "Conversational").
     grammar_quality: str  # Assessment of grammar quality (e.g., "Excellent", "Needs Improvement").
+    clarity_level: str  # Clarity assessment (e.g., "Clear", "Somewhat Clear", "Unclear").
+    summary: str  # One-sentence summary of the tone and grammar analysis.
     suggestions: Optional[List[str]] = None  # Optional list of suggestions for improvements.
