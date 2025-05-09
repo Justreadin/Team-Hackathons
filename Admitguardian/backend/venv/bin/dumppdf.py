@@ -1,4 +1,4 @@
-#!/workspaces/Team-Hackathons/Admitguardian/backend/venv/bin/python3
+#!/home/vboxuser/Justreadin/Hackathon/Admitguardian/backend/venv/bin/python3
 """Extract pdf structure in XML format"""
 
 import logging
