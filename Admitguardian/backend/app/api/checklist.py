@@ -1,5 +1,4 @@
-# checklist.py
-# FastAPI route for generating the final checklist based on the essay and resume
+# app/routes/checklist.py
 
 from fastapi import APIRouter, HTTPException
 from app.models.request_models import FinalChecklistRequest
@@ -14,10 +13,13 @@ async def generate_checklist(request: FinalChecklistRequest):
     Generate a final checklist based on the uploaded essay and resume.
     """
     try:
-        # Send the essay and resume content to generate the final checklist
-        checklist = generate_final_checklist(request.essay_text, request.resume_text, request.target_universities)
+        checklist_data = await generate_final_checklist(
+            essay_text=request.essay_text,
+            resume_text=request.resume_text,
+            target_universities=request.target_universities
+        )
 
-        return checklist
+        return FinalChecklistResponse(**checklist_data)
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating checklist: {str(e)}")

@@ -1,0 +1,25 @@
+backend/
+│
+├── app/
+│   ├── api/
+│   │   ├── essay.py          # Essay upload + analyze endpoints
+│   │   ├── resume.py         # Resume upload + analyze endpoints
+│   │   └── checklist.py      # Final checklist generator
+│   │
+│   ├── services/
+│   │   ├── openrouter_service.py  # Handles OpenRouter API calls
+│   │   ├── huggingface_service.py # Handles Huggingface API calls
+│   │   └── cohere_service.py      # Handles Cohere API calls
+│   │
+│   ├── utils/
+│   │   ├── scoring.py        # Smart scoring logic
+│   │   └── parsers.py        # PDF-to-text or doc parsing
+│   │
+│   ├── models/
+│   │   ├── request_models.py # Pydantic schemas for requests
+│   │   └── response_models.py # Pydantic schemas for responses
+│   │
+│   └── main.py               # FastAPI app entry
+│
+├── requirements.txt          # FastAPI, aiohttp, pdfplumber, etc.
+├── README.md                  # Project setup notes
