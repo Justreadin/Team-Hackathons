@@ -39,12 +39,12 @@
 | Method | Endpoint | Description |
 |:------:|:--------:|:-----------:|
 | `POST` | `/upload/essay` | Upload Statement of Purpose |
-| `POST` | `/upload/cv` | Upload Resume/CV |
-| `POST` | `/analyze/essay` | Analyze uploaded essay |
-| `POST` | `/analyze/cv` | Analyze uploaded CV |
-| `GET`  | `/risk-alerts/live` | Poll live document alerts |
+| `POST` | `/upload/resume` | Upload Resume/CV |
+| `POST` | `/evualuate/essay` | Analyze uploaded essay |
+| `GET`  | `/alerts/live-alerts` | Poll live document alerts |
 | `GET`  | `/dashboard/score` | Fetch risk scores & improvements |
-| `GET`  | `/final-checklist` | Generate personalized checklist |
+| `POST`  | `/checklist/generate-checklist` | Generate personalized checklist |
+| `GET` | `/evaluate/tone` | For tone evaluation
 
 ---
 

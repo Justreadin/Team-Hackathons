@@ -23,7 +23,7 @@ def calculate_resume_risk_score(formatting_issues, missing_skills, job_match_sco
         risk_score += 10
     return max(0, risk_score)
 
-@router.post("/upload-resume", response_model=ResumeAnalysisResponse)
+@router.post("/resume", response_model=ResumeAnalysisResponse)
 async def upload_resume(request: ResumeUploadRequest):
     """
     Analyze uploaded resume and return structured evaluation.
