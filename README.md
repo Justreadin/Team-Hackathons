@@ -34,6 +34,8 @@
 
 ---
 
+## BACKEND BASE URL: https://lyrical-mnn5.onrender.com
+
 ## API Endpoints Overview
 
 | Method | Endpoint | Description |
