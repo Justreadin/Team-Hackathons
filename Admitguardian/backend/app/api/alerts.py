@@ -3,28 +3,22 @@
 
 from fastapi import APIRouter, HTTPException
 from app.models.request_models import DocumentUploadRequest
-from app.models.response_models import DocumentUploadResponse
-from app.services.openrouter_service import generate_quick_alerts
+from app.models.response_models import DocumentUploadResponse, QuickAlertResponse
+from app.services.cohere_service import generate_quick_alerts
 
 router = APIRouter()
 
-@router.post("/live-risk-alerts", response_model=DocumentUploadResponse)
-async def live_risk_alerts(request: DocumentUploadRequest):
+@router.post("/live-alerts", response_model=QuickAlertResponse)
+async def live_alerts(request: DocumentUploadRequest):
     """
-    Quickly scan the uploaded essay or resume and return instant alerts (red flags).
+    Real-time red flag detection for an essay or resume. Returns critical alerts instantly.
     """
     try:
-        # Call your OpenRouter service to analyze and generate quick alerts
-        alerts_result = await generate_quick_alerts(
+        alert_data = await generate_quick_alerts(
             document_type=request.document_type,
             document_text=request.document_text
         )
-        
-        return DocumentUploadResponse(
-            message=alerts_result.get("message", "Quick scan completed."),
-            document_type=request.document_type,
-            status=alerts_result.get("status", "success")
-        )
+        return QuickAlertResponse(**alert_data)
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"Live alert generation failed: {str(e)}")

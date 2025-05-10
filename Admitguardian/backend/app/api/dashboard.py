@@ -7,7 +7,7 @@ from app.api.storage import temp_storage
 
 router = APIRouter()
 
-@router.get("/dashboard/score", response_model=DashboardScoreResponse)
+@router.get("/score", response_model=DashboardScoreResponse)
 async def get_dashboard_score():
     """
     Combine the essay and resume risk scores and provide a detailed breakdown.
