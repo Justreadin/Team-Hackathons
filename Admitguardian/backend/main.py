@@ -35,7 +35,13 @@ app.include_router(tone.router, prefix="/evaluate", tags=["tone"])
 app.include_router(dashboard.router, prefix="/dashboard", tags=["Dashboard"])
 
 @app.get("/")
-async def root():
+async def read_root():
     return {"message": "Welcome to the Document Analysis API!"}
+
+@app.head("/")
+def head_root():
+    return
+
+
 
 #uvicorn main:app --host 0.0.0.0 --port 8080 --reload
