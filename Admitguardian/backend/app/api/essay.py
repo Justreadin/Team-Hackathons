@@ -31,22 +31,32 @@ def calculate_risk_score(grammar_warnings, clarity_issues, tone):
 @router.post("/upload", response_model=EssayAnalysisResponse)
 async def upload_essay(request: EssayUploadRequest):
     try:
-        # Preprocessing and dummy data for simulation
+        # Dummy processed data
         processed_data = {
             "summary": "This is a dummy summary.",
             "keywords": ["dummy", "keywords", "example"]
         }
 
-        # Use external API for essay analysis
+        # External essay analysis
         essay_analysis = await analyze_essay(request.essay_text)
-
-        # Extracting results from analyze_essay
         score_result = essay_analysis
 
-        # Simulating the tone analysis results
+        # External tone & grammar analysis
         tone_result = await analyze_tone_and_grammar(request.essay_text)
 
-        # Update temp_storage with essay details
+        # Extracting tone info safely
+        grammar_quality = tone_result.get("grammar_quality", "Unknown")
+        clarity_level = tone_result.get("clarity_level", "Unclear")
+        tone_label = tone_result.get("tone_label", "Neutral")
+
+        # Deriving grammar_warnings and clarity_issues lists
+        grammar_warnings = [] if grammar_quality.lower() == "excellent" else ["Some grammar issues detected"]
+        clarity_issues = [] if clarity_level.lower() == "clear" else ["Clarity issues found"]
+
+        # Calculate risk score
+        risk_score = calculate_risk_score(grammar_warnings, clarity_issues, tone_label)
+
+        # Store breakdown temporarily
         temp_storage["essay_score"] = score_result["risk_score"]
         temp_storage["essay_breakdown"]["clarity"] = 80
         temp_storage["essay_breakdown"]["formal_tone"] = 50
@@ -54,25 +64,18 @@ async def upload_essay(request: EssayUploadRequest):
         temp_storage["essay_breakdown"]["tone"] = 50
         temp_storage["essay_suggestions"] = score_result["suggested_improvements"]
 
-        # Calculate risk score for essay using analysis results
-        risk_score = calculate_risk_score(
-            tone_result["grammar_warnings"], tone_result["clarity_issues"], tone_result["tone"]
-        )
-
         return {
             "score": score_result["risk_score"],
             "strengths": score_result["strengths"],
             "weaknesses": score_result["weaknesses"],
             "suggestions": score_result["suggested_improvements"],
             "red_flags": score_result["red_flags"],
-            "tone": tone_result["tone"],
-            "grammar_warnings": tone_result["grammar_warnings"],
-            "clarity_issues": tone_result["clarity_issues"],
-            "tone_label": tone_result["tone"],
-            "grammar_quality": "Good",
-            "risk_score": risk_score,
-            "keywords": processed_data["keywords"],
-            "summary": processed_data["summary"]
+            "tone": tone_label,
+            "grammar_warnings": grammar_warnings,
+            "clarity_issues": clarity_issues,
+            "tone_label": tone_label,
+            "grammar_quality": grammar_quality,
+            "risk_score": risk_score
         }
 
     except Exception as e:
