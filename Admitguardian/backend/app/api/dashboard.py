@@ -1,39 +1,37 @@
-# In app/api/dashboard.py (new file)
-from http.client import HTTPException
-from fastapi import APIRouter
+# app/api/dashboard.py
+from fastapi import APIRouter, HTTPException
 from app.models.response_models import DashboardScoreResponse
 from app.utils.scoring import calculate_combined_risk_score
 from app.api.storage import temp_storage
+from datetime import datetime
 
 router = APIRouter()
 
 @router.get("/score", response_model=DashboardScoreResponse)
 async def get_dashboard_score():
     """
-    Combine the essay and resume risk scores and provide a detailed breakdown.
+    Combine essay and resume scores, suggestions, and breakdowns to generate a final dashboard view.
     """
-    if temp_storage["essay_score"] is None or temp_storage["resume_score"] is None:
-        raise HTTPException(status_code=400, detail="Essay or Resume data not available.")
-    
-    # Calculate combined risk score based on essay and resume
-    combined_risk_score = calculate_combined_risk_score(
-        temp_storage["essay_score"], temp_storage["resume_score"]
-    )
+    essay_score = temp_storage.get("essay_score")
+    resume_score = temp_storage.get("resume_score")
 
-    # Collect suggestions from both essay and resume
-    combined_suggestions = list(set(
-        temp_storage["essay_suggestions"] + temp_storage["resume_suggestions"]
-    ))
+    if essay_score is None and resume_score is None:
+        raise HTTPException(status_code=400, detail="No evaluation data found for essay or resume.")
 
-    # Prepare breakdowns for pie charts
-    essay_breakdown = temp_storage["essay_breakdown"]
-    resume_breakdown = temp_storage["resume_breakdown"]
+    combined_risk_score = calculate_combined_risk_score(essay_score, resume_score)
 
-    return {
+    response = {
         "combined_score": combined_risk_score,
-        "essay_score": temp_storage["essay_score"],
-        "resume_score": temp_storage["resume_score"],
-        "suggestions": combined_suggestions,
-        "essay_breakdown": essay_breakdown,
-        "resume_breakdown": resume_breakdown
+        "essay_score": essay_score or 0,
+        "resume_score": resume_score or 0,
+        "suggestions": list(set(temp_storage.get("essay_suggestions", []) + temp_storage.get("resume_suggestions", []))),
+        "essay_breakdown": temp_storage.get("essay_breakdown", {}),
+        "resume_breakdown": temp_storage.get("resume_breakdown", {}),
+        "model_sources": {
+            "essay_model": temp_storage.get("essay_model", "N/A"),
+            "resume_model": temp_storage.get("resume_model", "N/A")
+        },
+        "last_updated": temp_storage.get("last_updated", datetime.utcnow())
     }
+
+    return response

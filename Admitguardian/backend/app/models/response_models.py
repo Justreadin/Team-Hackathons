@@ -19,7 +19,6 @@ class EssayAnalysisResponse(BaseModel):
     risk_score: int
 
 class EssayEvaluationResponse(BaseModel):
-    score: int
     strengths: list[str]
     weaknesses: list[str]
     suggestions: list[str]  # ✅ Match the key returned
@@ -78,14 +77,13 @@ class ToneCheckResponse(BaseModel):
     summary: str  # One-sentence summary of the tone and grammar analysis.
     suggestions: Optional[List[str]] = None  # Optional list of suggestions for improvements.
 
-
 class DashboardScoreResponse(BaseModel):
     combined_score: int
     essay_score: int
     resume_score: int
     suggestions: List[str]
-    essay_breakdown: Dict[str, int]  # e.g., Clarity, Grammar, Tone
-    resume_breakdown: Dict[str, int]  # e.g., Relevance, Structure, Skills
+    essay_breakdown: Dict[str, float]
+    resume_breakdown: Dict[str, float]
 
 class QuickAlertResponse(BaseModel):
     critical_alerts: List[str]
@@ -97,3 +95,5 @@ class DocumentUploadRequest(BaseModel):
     document_type: str  # e.g., 'resume' or 'essay'
     document_text: str
 
+class DailyQuestResponse(BaseModel):
+    quest: str

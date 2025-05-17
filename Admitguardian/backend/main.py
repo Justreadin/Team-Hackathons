@@ -4,7 +4,7 @@ load_dotenv()
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
-from app.api import essay, resume, checklist, alerts, tone, dashboard
+from app.api import essay, resume, checklist, alerts, tone, dashboard, quest
 
 
 @asynccontextmanager
@@ -33,6 +33,7 @@ app.include_router(checklist.router, prefix="/checklist", tags=["Checklist"])
 app.include_router(alerts.router, prefix="/alerts", tags=["Alerts"])
 app.include_router(tone.router, prefix="/evaluate", tags=["tone"])
 app.include_router(dashboard.router, prefix="/dashboard", tags=["Dashboard"])
+app.include_router(quest.router, tags=["quest"])
 
 @app.get("/")
 async def read_root():

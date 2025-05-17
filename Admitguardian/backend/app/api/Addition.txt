@@ -1,0 +1,202 @@
+✅ Additional Backend Endpoints for Guardian Quests Features
+📍1. POST /quest/daily
+Purpose: Generate or retrieve the user’s daily quest (mission of the day).
+
+http
+Copy code
+POST /quest/daily
+Payload (optional):
+
+json
+Copy code
+{
+  "user_id": "abc123",
+  "latest_scores": {
+    "alignment": 70,
+    "strengths": 60,
+    "writing": 80,
+    "red_flags": 50
+  }
+}
+Response:
+
+json
+Copy code
+{
+  "quest": "Today’s Mission: Improve your intro paragraph using active language."
+}
+Logic: Uses the weakest dimension to craft a personalized daily task from a predefined prompt bank.
+
+📍2. GET /meter/clarity?user_id=abc123
+Purpose: Get how many suggestions the user has marked as fixed this week.
+
+Response:
+
+json
+Copy code
+{
+  "clarity_score": 4,
+  "goal": 7,
+  "streak_active": true
+}
+Used to power the weekly clarity meter and badge system.
+
+📍3. POST /meter/clarity/update
+Purpose: Update clarity meter when user fixes a suggestion.
+
+http
+Copy code
+POST /meter/clarity/update
+Payload:
+
+json
+Copy code
+{
+  "user_id": "abc123",
+  "suggestion_id": "sugg_009",
+  "status": "fixed"
+}
+Response:
+
+json
+Copy code
+{
+  "message": "Updated",
+  "clarity_score": 5
+}
+📍4. POST /journal/entry
+Purpose: Save user’s mental check-in (optional).
+
+http
+Copy code
+POST /journal/entry
+Payload:
+
+json
+Copy code
+{
+  "user_id": "abc123",
+  "reflection": "I'm stuck rewriting the methods section."
+}
+Response:
+
+json
+Copy code
+{
+  "message": "Journal entry saved."
+}
+📍5. GET /coaching/snippet?user_id=abc123
+Purpose: Return a short motivational or coaching line based on current essay and journal data.
+
+Response:
+
+json
+Copy code
+{
+  "snippet": "Based on your draft and mood, focus on making your examples more specific."
+}
+📍6. GET /badges?user_id=abc123
+Purpose: Get current unlocked badges.
+
+Response:
+
+json
+Copy code
+{
+  "badges": [
+    {
+      "title": "7-Day Clarity Streak",
+      "unlocked": true,
+      "date_unlocked": "2025-05-16"
+    },
+    {
+      "title": "First Draft Uploaded",
+      "unlocked": true
+    }
+  ]
+}
+📍7. GET /simulator/future-you?user_id=abc123
+Purpose: Generate the AI-enhanced "Future You" version of the essay.
+
+Response:
+
+json
+Copy code
+{
+  "improved_draft": "In this revised version, I clearly outline my research focus on climate change adaptation and back it up with project-based examples..."
+}
+Uses same base prompt + additional transformations like tone refinement, clarity boosts, stronger openings.
+
+🔁 Updates to Existing Endpoints
+🛠 /dashboard/score → Add clarity tracker and IDs to suggestions
+New Response Format:
+
+json
+Copy code
+{
+  "overall_score": 68,
+  "breakdown": {
+    "alignment": 75,
+    "strengths": 55,
+    "writing": 80,
+    "red_flags": 60
+  },
+  "suggestions": [
+    {
+      "id": "sugg_001",
+      "text": "Clarify your research goals in paragraph 2.",
+      "status": "unresolved"
+    },
+    {
+      "id": "sugg_002",
+      "text": "Remove casual phrases like 'super excited'.",
+      "status": "unresolved"
+    }
+  ]
+}
+🧱 Folder Structure Additions
+/app/api/
+quests.py → Daily quests and future-you simulator
+
+clarity.py → Clarity meter + streak tracking
+
+journal.py → Mood log input
+
+badges.py → Badge system
+
+coaching.py → Micro-coaching generator
+
+/app/services/
+quest_service.py → Picks quests from prompt bank
+
+clarity_service.py → Tracks clarity progress and streaks
+
+badge_service.py → Unlock logic
+
+journal_service.py → Mood-based feedback and logging
+
+/app/models/
+quest_models.py
+
+clarity_models.py
+
+badge_models.py
+
+✅ Summary of New Endpoints
+Method	Endpoint	Description
+POST	/quest/daily	Generate personalized daily mission
+GET	/meter/clarity	Get clarity improvement status
+POST	/meter/clarity/update	Mark a suggestion as fixed
+POST	/journal/entry	Log a quick user reflection
+GET	/coaching/snippet	Return short AI-driven tip
+GET	/badges	Get current unlocked badges
+GET	/simulator/future-you	Return an improved essay draft
+
+
+
+
+Streak tracking
+
+Multi-quest daily challenges
+
+Quest reward logic

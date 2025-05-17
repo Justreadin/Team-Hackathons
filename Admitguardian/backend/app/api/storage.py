@@ -1,5 +1,3 @@
-# app/api/storage.py
-
 print("Loading storage.py...")
 
 temp_storage = {
@@ -20,5 +18,6 @@ temp_storage = {
         "overall": 0
     },
     "essay_suggestions": [],
-    "resume_suggestions": []
+    "resume_suggestions": [],
+    "last_essay_hash": None
 }

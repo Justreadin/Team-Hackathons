@@ -2,24 +2,25 @@ backend/
 │
 ├── app/
 │   ├── api/
-│   │   ├── essay.py          # Essay upload + analyze endpoints
-│   │   ├── resume.py         # Resume upload + analyze endpoints
-│   │   └── checklist.py      # Final checklist generator
-│   │
-│   ├── services/
-│   │   ├── openrouter_service.py  # Handles OpenRouter API calls
-│   │   ├── huggingface_service.py # Handles Huggingface API calls
-│   │   └── cohere_service.py      # Handles Cohere API calls
-│   │
-│   ├── utils/
-│   │   ├── scoring.py        # Smart scoring logic
-│   │   └── parsers.py        # PDF-to-text or doc parsing
-│   │
-│   ├── models/
-│   │   ├── request_models.py # Pydantic schemas for requests
-│   │   └── response_models.py # Pydantic schemas for responses
-│   │
-│   └── main.py               # FastAPI app entry
+│   │   ├── essay.py
+│   │   ├── resume.py
+│   │   ├── checklist.py
+│   │   └── quest.py           ◀️ NEW: Routes for daily quests
 │
-├── requirements.txt          # FastAPI, aiohttp, pdfplumber, etc.
-├── README.md                  # Project setup notes
+│   ├── services/
+│   │   ├── openrouter_service.py
+│   │   ├── huggingface_service.py
+│   │   ├── cohere_service.py
+│   │   └── quest_service.py   ◀️ NEW: Logic for quest generation & validation
+│
+│   ├── utils/
+│   │   ├── scoring.py
+│   │   ├── parsers.py
+│   │   └── conditions.py      ◀️ NEW (Optional): Compares progress vs. requirements
+│
+│   ├── models/
+│   │   ├── request_models.py
+│   │   ├── response_models.py
+│   │   └── quest_models.py    ◀️ NEW: Schemas for quests
+│
+│   └── main.py

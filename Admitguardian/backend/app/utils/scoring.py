@@ -1,38 +1,21 @@
 # scoring.py
 # Contains the logic for calculating risk scores based on various evaluations of essays and resumes
 
-def calculate_essay_score(essay_analysis: dict) -> int:
-    """
-    Calculate the risk score for the essay based on analysis results.
-    
-    Args:
-        essay_analysis (dict): A dictionary containing analysis results from AI evaluation.
-    
-    Returns:
-        int: A risk score on a scale of 0-100. Lower means more risky.
-    """
-    score = 100  # Start with a perfect score
-    
-    # Weights for different aspects of the essay
-    relevance_weight = 0.3
-    strength_weight = 0.3
-    tone_weight = 0.2
-    red_flags_weight = 0.2
-    
-    # Penalize based on weaknesses identified
-    if essay_analysis.get('relevance', 0) < 0.7:
-        score -= 20 * relevance_weight
-    if essay_analysis.get('strengths', 0) < 0.7:
-        score -= 20 * strength_weight
-    if essay_analysis.get('tone', 0) < 0.7:
-        score -= 20 * tone_weight
-    if essay_analysis.get('red_flags', []):
-        score -= 20 * red_flags_weight * len(essay_analysis['red_flags'])
-    
-    # Ensure the score is within the 0-100 range
-    score = max(0, min(100, score))
-    
-    return round(score)
+def calculate_essay_score(analysis: dict) -> int:
+    relevance = analysis.get("relevance", 0.5)
+    strengths = analysis.get("strengths", 0.5)
+    tone = analysis.get("tone", 0.5)
+    red_flags = analysis.get("red_flags", [])
+
+    # Original quality score
+    quality_score = (relevance + strengths + tone) / 3
+    penalty = 0.1 * len(red_flags)
+    adjusted_quality = max(0, min(1.0, quality_score - penalty))
+
+    # Risk score is inverse of quality
+    risk_score = (1.0 - adjusted_quality) * 100
+    return int(risk_score)
+
 
 def calculate_resume_score(resume_analysis: dict) -> int:
     """

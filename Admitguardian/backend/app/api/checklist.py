@@ -5,7 +5,7 @@ from app.services.openrouter_service import generate_final_checklist
 
 router = APIRouter()
 
-@router.post("/generate-checklist", response_model=FinalChecklistResponse)
+@router.post("/generate", response_model=FinalChecklistResponse)
 async def generate_checklist(request: FinalChecklistRequest):
     """
     Generate a final checklist based on the uploaded essay and resume.

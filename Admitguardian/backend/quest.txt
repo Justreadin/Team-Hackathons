@@ -1,0 +1,87 @@
+🎯 What the quest_service Solves
+The quest_service implements a daily adaptive quest system designed to:
+
+Encourage user engagement and progress on tasks like essay and resume improvement.
+
+Automatically generate personalized quests based on user status.
+
+Dynamically track progress and determine when a quest is complete.
+
+Provide feedback and reset functionality.
+
+It mimics a game-like challenge loop—a proven strategy to drive action and improve user motivation in educational or productivity tools (like AdmitGuardian or any student-assist platform).
+
+🧠 How the quest_service Works
+Let’s break it down step by step:
+
+✅ 1. Quest Generation — get_daily_quest()
+This function dynamically chooses a quest based on current user data stored in temp_storage.
+
+Logic:
+
+If no essay score exists → assumes user hasn’t worked on their essay → gives essay quest.
+
+Otherwise → gives resume quest.
+
+Then it:
+
+Fetches user progress (grammar_warnings, clarity_issues, resume_risk_score).
+
+Defines the requirements to complete the quest (e.g., 0 issues or risk score < 30).
+
+Calls is_quest_complete() (from conditions.py) to evaluate status.
+
+Returns a full quest dictionary with:
+
+json
+Copy code
+{
+  "type": "essay" or "resume",
+  "description": "Challenge text",
+  "requirements": { ... },
+  "progress": { ... },
+  "status": "complete" or "incomplete"
+}
+🛠 2. Quest Progress Update — update_quest_progress(update_data)
+This updates the user's progress when new data is submitted (e.g., after an AI evaluation of a new essay or resume).
+
+For essays:
+
+Stores new grammar and clarity issues.
+
+Recalculates a mock essay_score (to simulate performance).
+
+For resumes:
+
+Stores the new resume_risk_score.
+
+After saving the new data, it regenerates the quest using get_daily_quest() to return the latest status.
+
+♻️ 3. Reset Quest — reset_daily_quest()
+Clears all quest-related data in temp_storage to start fresh.
+
+This helps when:
+
+A new user session begins.
+
+User wants to retry or switch tasks.
+
+🧩 Role of conditions.py
+This is the brain behind status checking.
+
+Instead of hardcoding logic into the service file, it:
+
+Defines rules for when a quest is considered “complete”.
+
+Allows easily adding more quest types by creating new condition functions.
+
+This makes quest_service.py cleaner and more flexible.
+
+🏆 Benefits of This Architecture
+Feature	Benefit
+Dynamic Quest Type Selection	Automatically adapts based on user’s journey.
+Modular Condition Checks	Easy to extend and unit test (conditions.py).
+Centralized Temp Storage	Mimics session/user cache; ideal for MVP/hackathon stage.
+Game Mechanics	Motivates users to complete improvement tasks.
+Future-Proof Design	Easily add new quests or complexity later.
+

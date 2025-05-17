@@ -1,8 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admitguardian</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Overlay for mobile sidebar -->
+  <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h2>Dashboard</h2>
+        <button class="close-btn" onclick="toggleSidebar()">✖</button>
+      </div>
+      <div class="welcome">
+        <h2>Hi User</h2>
+        <p>Welcome back to your Dashboard!</p>
+      </div>
+      <input class="search-input" placeholder="🔍 Search Documents..." />
+
+      <h3 class="section-title">Projects (13)</h3>
+      <div class="projects-grid">
+        <div class="project-box pink">GH<p>Dashboard</p></div>
+        <div class="project-box blue">CP<p>Upload</p></div>
+        <div class="project-box violet">EC<p>Progress Tracker</p></div>
+        <div class="project-box indigo">TA<p>Settings</p></div>
+        <div class="project-box red">LP<p>Support</p></div>
+        <div class="project-box gray">8+<p>Feedback</p></div>
+      </div>
+    </aside>
+  <!-- Main container -->
+  <div class="dashboard">
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <button class="hamburger" onclick="toggleSidebar()">☰</button>
+
+      <button class="add-btn">+</button>
+    </main>
+  </div>
+
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('overlay');
+      sidebar.classList.toggle('active');
+      overlay.classList.toggle('active');
+    }
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+<!---<!DOCTYPE html>
+<html lang="en">
+<head>
   <style>
-    /* Reset and Basics */
 * {
   margin: 0;
   padding: 0;
@@ -73,7 +134,7 @@ h3#score-text {
   margin-right: auto;
   margin-top: 10px;
 }
-.checklist-btn{  
+.checklist-btn{
   margin-top: 10px;
   background: #00f5d4;
   color: #0a0a23;
@@ -102,27 +163,25 @@ h3#score-text {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Risk Score Dashboard</title>
 
-  <!-- Chart.js for beautiful charts -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
   <div class="dashboard-container">
 
-    <!-- Main Risk Score -->
+
     <div class="risk-score">
       <h2>Overall Application Score</h2>
       <canvas id="scoreGauge" width="200" height="200"></canvas>
       <h3 id="score-text">Loading...</h3>
     </div>
 
-    <!-- Strengths vs Weakness Pie Chart -->
+
     <div class="chart-container">
       <h2>Strengths vs Weaknesses</h2>
       <canvas id="strengthsChart" width="300" height="300"></canvas>
     </div>
 
-    <!-- Quick Wins Checklist -->
     <div class="quick-wins">
       <h2>Quick Wins</h2>
       <ul id="quickWinsList">
@@ -190,4 +249,4 @@ const strengthsChart = new Chart(ctxStrengths, {
   </script>
 
 </body>
-</html>
+</html>---->
