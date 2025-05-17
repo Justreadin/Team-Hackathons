@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Essay Risk Analysis Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;display=swap" rel="stylesheet">
+    <link href="./css/equery.css" rel="stylesheet">
+    <link href="./css/style.css" rel="stylesheet">
+    <!--style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #0d1117;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 2rem;
+            padding: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            background: #161b22;
+            border-radius: 16px;
+            padding: 2rem;
+            flex: 1;
+            min-width: 300px;
+            max-width: 400px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .button {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: #0ea5e9;
+            border: none;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+
+        .secondary-button {
+            background: transparent;
+            border: 1px solid #0ea5e9;
+        }
+
+        .shield {
+            font-size: 64px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .upload-area {
+            background: #0d1117;
+            border: 2px dashed #444;
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .risk-alert {
+            background: #3b0a0a;
+            color: #f87171;
+            padding: 0.5rem;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: linear-gradient(to right, #3b82f6, #8b5cf6);
+            border-radius: 3px;
+            margin: 1rem 0;
+        }
+
+        .score-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: conic-gradient(#0ea5e9 0% 0%, #222 0% 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 1rem auto;
+            transition: background 1s ease;
+        }
+
+        .pie-chart {
+            width: 80px;
+            height: 80px;
+            margin: 0.5rem auto;
+        }
+
+        .checklist {
+            margin-top: 1rem;
+        }
+
+        .checklist li::before {
+            content: '✓';
+            color: #22c55e;
+            margin-right: 0.5rem;
+        }
+    </style-->
+    <script src="chrome-extension://amcccnldajjnngnaoinemnaloklogjak/assets/main-world.ts-CkT3TxoZ.js" type="module"></script>
+    <style>[vaul-drawer]{touch-action:none;will-change:transform;transition:transform .5s cubic-bezier(.32,.72,0,1)}[vaul-drawer][vaul-drawer-direction=bottom]{transform:translate3d(0,100%,0)}[vaul-drawer][vaul-drawer-direction=top]{transform:translate3d(0,-100%,0)}[vaul-drawer][vaul-drawer-direction=left]{transform:translate3d(-100%,0,0)}[vaul-drawer][vaul-drawer-direction=right]{transform:translate3d(100%,0,0)}.vaul-dragging .vaul-scrollable [vault-drawer-direction=top],.vaul-dragging .vaul-scrollable [vault-drawer-direction=bottom]{overflow-y:hidden!important}.vaul-dragging .vaul-scrollable [vault-drawer-direction=left],.vaul-dragging .vaul-scrollable [vault-drawer-direction=right]{overflow-x:hidden!important}[vaul-drawer][vaul-drawer-visible=true][vaul-drawer-direction=top],[vaul-drawer][vaul-drawer-visible=true][vaul-drawer-direction=bottom]{transform:translate3d(0,var(--snap-point-height, 0),0)}[vaul-drawer][vaul-drawer-visible=true][vaul-drawer-direction=left],[vaul-drawer][vaul-drawer-visible=true][vaul-drawer-direction=right]{transform:translate3d(var(--snap-point-height, 0),0,0)}[vaul-overlay]{opacity:0;transition:opacity .5s cubic-bezier(.32,.72,0,1)}[vaul-overlay][vaul-drawer-visible=true]{opacity:1}[vaul-drawer]:after{content:"";position:absolute;background:inherit;background-color:inherit}[vaul-drawer][vaul-drawer-direction=top]:after{top:initial;bottom:100%;left:0;right:0;height:200%}[vaul-drawer][vaul-drawer-direction=bottom]:after{top:100%;bottom:initial;left:0;right:0;height:200%}[vaul-drawer][vaul-drawer-direction=left]:after{left:initial;right:100%;top:0;bottom:0;width:200%}[vaul-drawer][vaul-drawer-direction=right]:after{left:100%;right:initial;top:0;bottom:0;width:200%}[vaul-overlay][vaul-snap-points=true]:not([vaul-snap-points-overlay=true]):not([data-state=closed]){opacity:0}[vaul-overlay][vaul-snap-points-overlay=true]:not([vaul-drawer-visible=false]){opacity:1}@keyframes fake-animation{}@media (hover: hover) and (pointer: fine){[vaul-drawer]{-webkit-user-select:none;user-select:none}}</style>
+</head>
+
+<body data-demoway-document-id="y2nwjexka7ety97al7g6bz87">
+    <div id="root">
+        <div id="container" class="e-flex justify-around align-center flex-wrap e-text-center">
+            <div class="e-flex justify-center align-center flex-wrap e-margin-bottom card">
+                <div class="card-inner">
+                    <div class="e-flex justify-center" style="height: 106px">
+                        <img class="img-icon" src="shield.png">
+                    </div>
+                    <div class="card-content">
+                        <h1>PROTECT YOUR FUTURE</h1>
+                        <p>Detect Mistakes. Maximize Success</p>
+                    </div>
+                    <div class="card-buttons e-flex justify-center flex-wrap">
+                        <button class="btn btn-primary e-margin-bottom">Upload My Documents</button>
+                        <button class="btn  btn-secondary">Live Demo (Rist Detection in Action)</button>
+                    </div>
+                </div>
+            </div>
+            <div class="e-flex justify-center align-center flex-wrap e-margin-bottom card">
+                <div class="card-inner">
+                    <div class="card-content">
+                        <div class="e-flex align-center justify-between dropzone">
+                            <div class="icon"></div>
+                            <div class="text">Drag and drop or click to upload your essay and CV</div>
+                            <div class="action-arrow"></div>
+                        </div>
+                    </div>
+                    <div class="card-content e-flex flex-row flex-nowrap justify-between">
+                        <div class="purpose-left">
+                            <h4>Statement of Purpose</h4>
+                            <div class="purpose-output card-box">
+                                <textarea class="text"></textarea>
+                            </div>
+                        </div>
+                        <div class="purpose-right card-box">
+                            <div class="risk-container">
+                                <h5>LIVE RISK ALERTS</h5>
+                                <div class="risk-outputs">
+                                    <div class="risk-alert critical">Weak Introduction Detected</div>
+                                    <div class="risk-alert critical">Research Experience Missing</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <div class="progress-container">
+                            <h4 class="e-text-left">SCANNING PROGRESS</h4>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar"></div>
+                            </div>
+                            <p class="e-text-left e-small e-opacity">Scanning for Research Strenghts...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="e-flex justify-center align-center flex-wrap e-margin-bottom card">
+                <div class="card-inner">
+                    <div class="card-content">
+                        <div class="risk-score">
+                            <h4 class="e-text-left">RISK SCORE</h4>
+                            <div id="riskScore" class="e-center score-chart large"></div>
+                            <div class="half-split-container e-flex justify-between">
+                                <div class="half-split">
+                                    <h4>Strenghts</h4>
+                                    <div class="chart-split-container e-flex justify-around">
+                                        <div class="chart-split">
+                                            <div id="strengthScore" class="e-center score-chart small"></div>
+                                        </div>
+                                        <div class="chart-split">
+                                            <div class="chart-text">RESEARCH CLARITY TONE</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="half-split">
+                                    <h4>Weaknesses</h4>
+                                    <div class="chart-split-container e-flex justify-around">
+                                        <div class="chart-split">
+                                            <div id="weaknessesScore" class="e-center score-chart small"></div>
+                                        </div>
+                                        <div class="chart-split">
+                                            <div class="chart-text">GAPS TONE</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-box e-padding">
+                                <h4 class="e-text-left e-text-white e-margin-none">QUICK WINS</h4>
+                                <div class="card-list-item">
+                                    <div class="card-item">Revise the opening to be more engaging</div>
+                                    <div class="card-item">Add a research project example</div>
+                                    <div class="card-item">Clarify your career goals</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--div class="card">
+        <div class="shield">🛡️</div>
+        <h2>Protect Your Future</h2>
+        <p>Detect Mistakes. Maximize Success.</p>
+        <button class="button">Upload My Documents</button>
+        <button class="button secondary-button">Live Demo (Risk Detection in Action)</button>
+    </div>
+
+    <div class="card">
+        <div class="upload-area">Drag & drop or click to upload your essay and CV</div>
+        <h3 style="margin-top: 1rem;">Statement of Purpose</h3>
+        <p style="opacity: 0.6;">Present shunfext essay 'n a seemant...</p>
+        <div class="risk-alert">Weak Introduction Detected</div>
+        <div class="risk-alert">Research Experience Missing</div>
+        <h4 style="margin-top: 1rem;">Scanning Progress</h4>
+        <div class="progress-bar"></div>
+        <p>Scanning for Research Strengths ...</p>
+    </div>
+
+    <div class="card">
+        <h3>Risk Score</h3>
+        <div class="score-circle" id="scoreCircle">72</div>
+        <h4>Strengths</h4>
+        <div class="pie-chart">Research / Clarity / Tone</div>
+        <h4>Weaknesses</h4>
+        <div class="pie-chart">Gaps / Tone</div>
+        <h4>Quick Wins</h4>
+        <ul class="checklist">
+            <li>Revise opening to be more engaging</li>
+            <li>Add a research project example</li>
+            <li>Clarify your career goals</li>
+        </ul>
+    </div>
+
+    <script>
+        function updateScoreCircle(score) {
+            const circle = document.getElementById('scoreCircle');
+            const percentage = Math.min(Math.max(score, 0), 100);
+            circle.style.background = `conic-gradient(#0ea5e9 0% ${percentage}%, #222 ${percentage}% 100%)`;
+            circle.textContent = percentage;
+        }
+
+        // Example usage
+        updateScoreCircle(72);
+    </script-->
+
+</body>
+
+</html>
