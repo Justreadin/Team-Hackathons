@@ -24,12 +24,12 @@
 
       <h3 class="section-title">Projects (13)</h3>
       <div class="projects-grid">
-        <div class="project-box pink">GH<p>Dashboard</p></div>
-        <div class="project-box blue">CP<p>Upload</p></div>
-        <div class="project-box violet">EC<p>Progress Tracker</p></div>
-        <div class="project-box indigo">TA<p>Settings</p></div>
-        <div class="project-box red">LP<p>Support</p></div>
-        <div class="project-box gray">8+<p>Feedback</p></div>
+        <div class="project-box pink" onclick="linkto('dashboard.html')">GH<p>Dashboard</p></div>
+        <div class="project-box blue" onclick="linkto('upload.html')">CP<p>Upload</p></div>
+        <div class="project-box violet" onclick="linkto('index.html')">EC<p>Guardian Quest</p></div>
+        <div class="project-box indigo" onclick="linkto('index.html')">TA<p>Settings</p></div>
+        <div class="project-box red" onclick="linkto('index.html')">LP<p>Support</p></div>
+        <div class="project-box gray" onclick="linkto('index.html')">8+<p>Chat</p></div>
       </div>
     </aside>
   <!-- Main container -->
@@ -39,6 +39,7 @@
     <main class="main-content">
       <button class="hamburger" onclick="toggleSidebar()">☰</button>
 
+    <iframe src="#"></iframe>
       <button class="add-btn">+</button>
     </main>
   </div>
@@ -49,6 +50,9 @@
       const overlay = document.getElementById('overlay');
       sidebar.classList.toggle('active');
       overlay.classList.toggle('active');
+    }
+    function linkto(link){
+      document.getElementsByTagName("iframe")[0].src = link
     }
   </script>
 </body>
