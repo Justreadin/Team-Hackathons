@@ -1,11 +1,213 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <style>
+    /* Reset and Basics */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', 'Space Grotesk', sans-serif;
+}
+
+body {
+  background: radial-gradient(circle at center, #0a0a23, #000010);
+  color: #ffffff;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.options{
+  padding-bottom: 50px;
+}
+
+.options button{
+  margin: 0px 1px;
+  background: #0a0a23;
+  color: #00f5d4;
+  border: 2px solid #00f5d4;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+  float: right;
+}
+
+.options button:hover, .options button:focus {
+  outline: none;
+  background: #00f5d4;
+  color: #0a0a23;
+}
+
+/* Page Layout */
+.page-container {
+  display: flex;
+  height: 100vh;
+}
+
+/* Upload Area */
+.upload-area {
+  flex: 2;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  animation: fadeIn 1.5s ease;
+}
+
+.upload-area h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.dropzone {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px dashed #00f5d4;
+  padding: 40px;
+  border-radius: 20px;
+  text-align: center;
+  margin-bottom: 20px;
+  transition: 0.3s;
+}
+
+.dropzone:hover {
+  background: rgba(0, 245, 212, 0.1);
+  cursor: pointer;
+}
+
+.upload-btn {
+  margin-top: 10px;
+  background: #00f5d4;
+  color: #0a0a23;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 30px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.upload-btn:hover {
+  background: #0a0a23;
+  color: #00f5d4;
+  border: 2px solid #00f5d4;
+}
+
+/* Text Editor */
+.text-editor {
+  margin-top: 20px;
+  width: 100%;
+  height: 300px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid #00f5d4;
+  border-radius: 15px;
+  color: #ffffff;
+  padding: 20px;
+  font-size: 1rem;
+  resize: none;
+}
+
+.dashboard-link{
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10px;
+}
+.dashboard-btn{  
+  margin: 20px;
+  background: #00f5d4;
+  color: #0a0a23;
+  font-weight: bold;
+  box-shadow: 0 0 15px #00f5d4;
+  padding: 12px 24px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.dashboard-btn:hover {
+  background: #0a0a23;
+  color: #00f5d4;
+  box-shadow: 0 0 20px #00f5d4;
+}
+
+/* Risk Sidebar */
+.risk-sidebar {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.03);
+  border-left: 2px solid #00f5d4;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  animation: slideIn 1.5s ease;
+}
+
+.risk-sidebar h3 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: #00f5d4;
+}
+
+#alerts-list {
+  list-style: none;
+}
+
+.risk {
+  background: rgba(0, 245, 212, 0.08);
+  border-radius: 10px;
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  font-size: 1rem;
+  animation: pulse 2s infinite;
+}
+
+.risk.critical {
+  border-left: 5px solid #ff4d6d;
+}
+
+.risk.warning {
+  border-left: 5px solid #ffd166;
+}
+
+.risk.info {
+  border-left: 5px solid #00f5d4;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(100px);}
+  to { opacity: 1; transform: translateX(0);}
+}
+
+@keyframes pulse {
+  0% {box-shadow: 0 0 0 0 rgba(0, 245, 212, 0.4);}
+  70% {box-shadow: 0 0 0 10px rgba(0, 245, 212, 0);}
+  100% {box-shadow: 0 0 0 0 rgba(0, 245, 212, 0);}
+}
+
+@media screen and (max-width:1200px){
+  .page-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  body {
+    overflow: visible;
+  }
+}
+  </style>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Upload & Risk Detection</title>
-  <link rel="stylesheet" type="text/css" href="./css/equery.css">
-  <link rel="stylesheet" type="text/css" href="./css/style.css">
 </head>
 <body>
 
@@ -13,7 +215,13 @@
 
     <!-- Left: Document Upload/Editor Area -->
     <div class="upload-area">
-      <h2>Upload Your Essay or Resume</h2>
+      <div class="options">
+        <button class="SoP" onclick="makeactive(this)">Statement Of Purpose (SoP)</button>
+        <button class="CV" onclick="makeactive(this)">Curriculum Vitae (CV)</button>
+        <button class="letter" onclick="makeactive(this)">Letter</button>
+        <button class="resume" autofocus onclick="makeactive(this)">Resume</button>
+      </div>
+      <h2>Upload Your Resume</h2>
       
       <div class="dropzone" id="dropzone">
         <p>Drag & Drop your file here</p>
@@ -22,7 +230,7 @@
       </div>
 
       <textarea id="text-editor" class="text-editor" placeholder="Or paste your essay here..."></textarea>
-      <a href="dashboard.html" class="dashboard-link"><button class="dashboard-btn">View Potential Risks</button></a>
+      <a href="dashboard.html" class="dashboard-link"><button class="dashboard-btn">View Potential Risks &#8594;</button></a>
     </div>
 
     <!-- Right: Live Risk Detection Sidebar -->
@@ -36,64 +244,15 @@
     </div>
 
   </div>
-  <div class="app-overlay"></div>
+<script>
+function makeactive(self) {
+  document.getElementsByTagName("h2")[0].innerHTML = `Upload Your ${self.innerHTML}`
+}
 
-  <script type="module">
-
-import './js/equery.js';
-import { FileLoader, openModal, openModal2, extractTextFromDataUrl } from './js/utils.js';
-
-// upload.js
-const filePicker = EQuery.elemt('input', null, null, {type: 'file', accept: 'application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain'}, 'display: none')
-const fileLoader = window.fileLoader = new FileLoader();
-const overlay = document.querySelector('.app-overlay')
 const editor = document.getElementById('text-editor');
 const alertsList = document.getElementById('alerts-list');
 
 let timeout = null;
-
-EQuery('.dropzone').append(filePicker);
-
-fileLoader.onLoaded(async function (result, filename, ext) {
-  let spinner = EQuery.elemt('div', null, 'app-spinner').spinner();
-  let modal = new openModal({ content: [{ 'm2': {html: spinner}, 'm8': { text: {elt: document.createTextNode('Loading file contents...')} } }] });
-  let blob = window.blob = fileLoader.toBlob(result);
-  EQuery('.dropzone p:first-child').text(`${filename}.${ext}`);
-
-  extractTextFromDataUrl(result, function (fileContent) {
-    EQuery('#text-editor').val(fileContent);
-    modal.close();
-    checkAlerts();
-  });
-
-  /*switch(blob.type) {
-
-    case 'text/plain':
-      let fileContent = await blob.text();
-      modal.close();
-      EQuery('#text-editor').val(fileContent);
-      checkAlerts();
-      break;
-
-    case 'application/pdf':
-      let pdfContent = await extractTextFromPdfDataUrl(result);
-      modal.close();
-      EQuery('#text-editor').val(pdfContent);
-      checkAlerts();
-      break;
-
-    case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-      modal.close();
-      break;
-
-    default:
-      new openModal2({ header: 'Invalid file format', content: [{ 'm12': { text: {elt: document.createTextNode('Only accepts the following file formats: *.txt, *.text, *.pdf, *.dot, *.doc, *.docx')} } }] });
-      blob = null;
-      break;
-    
-  }*/
- 
-});
 
 // Helper function to create a risk alert element
 function createRiskAlert(type, message) {
@@ -127,65 +286,29 @@ function detectRisks(text) {
   return risks;
 }
 
-function checkAlerts() {
-  const text = editor.value;
-  const risks = detectRisks(text);
-
-  // Clear current alerts
-  alertsList.innerHTML = '';
-
-  if (risks.length === 0) {
-    const safe = createRiskAlert('info', 'No major risks detected. Looking good!');
-    alertsList.appendChild(safe);
-  } else {
-    risks.forEach(risk => {
-      const alert = createRiskAlert(risk.type, `⚡ ${risk.message}`);
-      alertsList.appendChild(alert);
-    });
-  }
-}
-
 // Listen to typing events
-EQuery(editor).on('input', () => {
+editor.addEventListener('input', () => {
   clearTimeout(timeout);
 
-  timeout = setTimeout(() => checkAlerts(), 1000); // wait 1 second after typing stops
-});
+  timeout = setTimeout(() => {
+    const text = editor.value;
+    const risks = detectRisks(text);
 
-EQuery(document).on('dragover', function(event) {
-    event.preventDefault();
-    event.dataTransfer.dropEffect = 'copy';
-}, false);
+    // Clear current alerts
+    alertsList.innerHTML = '';
 
-EQuery(document).on('dragenter', function(event) {
-    event.preventDefault();
-    EQuery(overlay).show();
-}, false);
-
-EQuery(document).on('dragend', function(event) {
-    event.preventDefault();
-    EQuery(overlay).hide();
-}, false);
-
-EQuery(document).on('drop', function(event) {
-    event.preventDefault();
-    if (event.dataTransfer.types[0] === 'text/plain')
-        return;
-    if (event.dataTransfer.items) {
-        fileLoader.loadItemList(event.dataTransfer.items);
+    if (risks.length === 0) {
+      const safe = createRiskAlert('info', 'No major risks detected. Looking good!');
+      alertsList.appendChild(safe);
     } else {
-        fileLoader.loadFiles(event.dataTransfer.files);
+      risks.forEach(risk => {
+        const alert = createRiskAlert(risk.type, `⚡ ${risk.message}`);
+        alertsList.appendChild(alert);
+      });
     }
-}, false);
 
-EQuery('.upload-btn').on('click', () => filePicker[0].click());
-
-filePicker.on('change', function () {
-  let file = this.files[0];
-  fileLoader.loadFile(file);
+  }, 1000); // wait 1 second after typing stops
 });
-
-  </script>
+</script>
 </body>
-
 </html>

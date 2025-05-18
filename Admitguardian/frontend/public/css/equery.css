@@ -378,12 +378,12 @@ img.transparent {height: auto;width: 100%;max-width: 500px;}
 .e-flex.justify-between {justify-content: space-between;}
 .e-flex.justify-around {justify-content: space-around;}
 .e-flex.justify-evenly {justify-content: space-evenly;}
+.e-flex.justify-stretch {justify-content: stretch;}
 .e-flex.item-center {align-items: center;}
 .e-flex.item-start {align-items: flex-start;}
 .e-flex.item-end {align-items: flex-end;}
 .e-flex.item-start {align-items: stretch;}
 .e-flex.item-baseline {align-items: baseline;}
-.e-flex.flex-column {flex-direction: column}
 .e-flex .flex-1 {flex: 1}
 
 .e-ontop {z-index: 999}

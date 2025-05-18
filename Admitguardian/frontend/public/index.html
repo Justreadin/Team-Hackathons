@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,7 +29,7 @@ body {
 /* Shield Animation */
 .shield img {
   width: 120px;
-  height: 120px;
+  height: 170px;
   margin-bottom: 20px;
   animation: spin 8s linear infinite;
   filter: drop-shadow(0 0 10px #00f5d4);
@@ -93,16 +94,26 @@ body {
   color: #0a0a23;
 }
 
-/* Animations */
+/* Animations
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotateY(0deg) rotate(0deg);
+    }
+  25% {
+  transform: rotateY(90deg) rotate(180deg);
+  }
+  75% {
+  transform: rotateY(270deg) rotate(0deg);
+  }
+  100% {
+  transform: rotateY(360deg) rotate(0deg);
+  }
 }
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(20px);}
   to { opacity: 1; transform: translateY(0);}
-}
+}*/
   </style>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -112,14 +123,14 @@ body {
 
   <div class="container">
     <div class="shield">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Shield_icon.svg/2048px-Shield_icon.svg.png" alt="Shield Icon">
+      <img src="shield.webp" alt="Shield Icon">
     </div>
 
     <h1 class="headline">Protect Your Future</h1>
     <p class="tagline">Detect Mistakes. Maximize Success.</p>
 
     <div class="buttons">
-      <a href="upload.html"><button class="primary-btn">Upload My Documents</button></a>
+      <a href="dashboard.html"><button class="primary-btn">Upload My Documents</button></a>
       <button class="secondary-btn">Live Demo</button>
     </div>
   </div>
