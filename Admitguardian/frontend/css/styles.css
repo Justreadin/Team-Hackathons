@@ -235,16 +235,16 @@ width: 100%;
     height: 100vh;
     background: var(--background-color);
     transition: left 0.3s ease;
-    z-index: 1001;
-    overflow-y: auto;
-     scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
-  }
+      z-index: 1001;
+      overflow-y: auto;
+       scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    }
 
-  #sidebar {
-  overflow: visible;
-  outline: 2px solid blue;
-}
+    #sidebar {
+    overflow: auto;
+    outline: 2px solid blue;
+  }
 
 
   .sidebar.active {
@@ -301,7 +301,7 @@ width: 100%;
   .sidebar {
     width: 100%;
     padding: 20px 15px;
-    overflow: visible;
+    overflow: auto;
   }
 
   .projects-grid {
