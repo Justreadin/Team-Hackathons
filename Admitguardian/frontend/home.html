@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Admitguardian</title>
+	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+	<link rel="stylesheet" href="css/upload.css">
+	<link rel="stylesheet" href="css/styles.css" />
+</head>
+
+<body class="e-flex justify-center">
+	<!-- Overlay for mobile sidebar -->
+	<div id="overlay" class="overlay"></div>
+	<aside class="sidebar e-flex flex-column" id="sidebar">
+		<div class="sidebar-header e-flex align-center justify-between">
+			<h2>Home</h2>
+			<button class="close-btn">✖</button>
+		</div>
+		<div class="welcome">
+			<h2>Hi User</h2>
+			<p>Welcome to Admitguardian!</p>
+		</div>
+		<input class="search-input" placeholder="🔍 Search Documents..." />
+		<h3 class="section-title">HOME</h3>
+		<div class="projects-grid">
+			<div class="project-box pink e-flex justify-center flex-column">
+  				<a href="dashboard.html" class="btn">DH<p>Dashboard</p></a>
+			</div>
+			<div class="project-box blue e-flex justify-center flex-column">UP<p>Upload</p></div>
+			<div class="project-box violet e-flex justify-center flex-column">
+					<a href="companion.html" class="btn">AC<p>AI Companion</p></a></div>
+			<div class="project-box indigo e-flex justify-center flex-column">ST<p>Settings</p></div>
+			<div class="project-box red e-flex justify-center flex-column">SP<p>Support</p></div>
+			<div class="project-box gray e-flex justify-center flex-column">FB<p>Feedback</p></div>
+		</div>
+	</aside>
+	<!-- Main container -->
+	<div class="dashboard e-flex">
+
+		<!-- Main Content -->
+		<main class="main-content">
+			<button class="hamburger">☰</button>
+			<div class="page-container">
+
+    		<!-- Left: Document Upload/Editor Area -->
+    			<div class="upload-area">
+      				<div class="options">
+        				<button class="SoP" onclick="makeactive(this)">Statement Of Purpose (SoP)</button>
+        				<button class="CV" onclick="makeactive(this)">Curriculum Vitae (CV)</button>
+        				<button class="letter" onclick="makeactive(this)">Letter</button>
+        				<button class="resume" autofocus onclick="makeactive(this)">Resume</button>
+					</div>
+      					<span>Upload Your Resume</span>
+
+      					<div class="dropzone" id="dropzone">
+       					 	<p>Drag & Drop your file here</p>
+        					<p>or</p>
+        					<button class="upload-btn">Browse Files</button>
+      					</div>
+
+      					<textarea id="text-editor" class="text-editor" placeholder="Or paste your essay here..."></textarea>
+      					<a href="dashboard.html" class="dashboard-link"><button class="dashboard-btn">View Potential Risks &#8594;</button></a>
+    					</div>
+
+    <!-- Right: Live Risk Detection Sidebar -->
+    					<div class="risk-sidebar">
+      						<h3>Instant Risk Alerts</h3>
+      						<ul id="alerts-list">
+        					<li class="risk critical">⚠️ Weak Introduction Detected</li>
+        					<li class="risk warning">⚠️ Missing Research Experience</li>
+								<li class="risk info">ℹ️ Tone could be more formal</li>
+      						</ul>
+    					</div>
+
+  					</div>
+  				</div>
+
+			<button class="add-btn">+</button>
+		</main>
+	</div>
+
+	<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const dashboardLinks = ['dashboard.html', 'upload.html', 'index.html', 'index.html', 'index.html', 'index.html'];
+  const iframe = document.querySelector('iframe');
+  const projectBoxes = document.querySelectorAll('.project-box');
+
+  projectBoxes.forEach((elt, i) => {
+    elt.addEventListener('click', () => {
+      iframe.src = dashboardLinks[i];
+    });
+  });
+
+  const overlay = document.getElementById('overlay');
+  const closeBtn = document.querySelector('.close-btn');
+  const hamburger = document.querySelector('.hamburger');
+  const sidebar = document.getElementById('sidebar');
+
+  // Toggle sidebar and overlay visibility
+  function toggleSidebar() {
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+  }
+
+  overlay.addEventListener('click', toggleSidebar);
+  if (closeBtn) closeBtn.addEventListener('click', toggleSidebar);
+  if (hamburger) hamburger.addEventListener('click', toggleSidebar);
+});
+
+
+	</script>
+<script src="upload.js"></script>
+</body>
+
+</html>

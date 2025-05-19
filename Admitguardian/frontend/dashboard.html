@@ -1,252 +1,334 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admitguardian</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="styles.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AdmitGuardian | AI Document Analysis</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>
-  <!-- Overlay for mobile sidebar -->
-  <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+<body class="e-flex">
+    <!-- Overlay for mobile sidebar -->
+    <div id="overlay" class="overlay"></div>
 
-    <aside class="sidebar" id="sidebar">
-      <div class="sidebar-header">
-        <h2>Dashboard</h2>
-        <button class="close-btn" onclick="toggleSidebar()">✖</button>
-      </div>
-      <div class="welcome">
-        <h2>Hi User</h2>
-        <p>Welcome back to your Dashboard!</p>
-      </div>
-      <input class="search-input" placeholder="🔍 Search Documents..." />
-
-      <h3 class="section-title">Projects (13)</h3>
-      <div class="projects-grid">
-        <div class="project-box pink">GH<p>Dashboard</p></div>
-        <div class="project-box blue">CP<p>Upload</p></div>
-        <div class="project-box violet">EC<p>Progress Tracker</p></div>
-        <div class="project-box indigo">TA<p>Settings</p></div>
-        <div class="project-box red">LP<p>Support</p></div>
-        <div class="project-box gray">8+<p>Feedback</p></div>
-      </div>
+    <!-- Sidebar -->
+    <aside class="sidebar e-flex flex-column" id="sidebar">
+        <div class="sidebar-header e-flex align-center justify-between">
+            <h2>Home</h2>
+            <button class="close-btn">✖</button>
+        </div>
+        <div class="welcome">
+            <h2>Hi User</h2>
+            <p>Welcome to Admitguardian!</p>
+        </div>
+        <input class="search-input" placeholder="🔍 Search Documents..." />
+        <h3 class="section-title">HOME</h3>
+        <div class="projects-grid">
+            <div class="project-box pink e-flex justify-center flex-column">
+                <a href="dashboard.html" class="btn">DH<p>Dashboard</p></a>
+            </div>
+            <div class="project-box blue e-flex justify-center flex-column">
+                <a href="home.html" class="btn">UP<p>Upload</p></a>
+            </div>
+            <div class="project-box violet e-flex justify-center flex-column">
+                <a href="companion.html" class="btn">AC<p>AI Companion</p></a>
+            </div>
+            <div class="project-box indigo e-flex justify-center flex-column">ST<p>Settings</p></div>
+            <div class="project-box red e-flex justify-center flex-column">SP<p>Support</p></div>
+            <div class="project-box gray e-flex justify-center flex-column">FB<p>Feedback</p></div>
+        </div>
     </aside>
-  <!-- Main container -->
-  <div class="dashboard">
 
-    <!-- Main Content -->
-    <main class="main-content">
-      <button class="hamburger" onclick="toggleSidebar()">☰</button>
+    <!-- Dashboard Container -->
+    <div class="dashboard-container">
+        <button class="hamburger">☰</button>
 
-      <button class="add-btn">+</button>
-    </main>
-  </div>
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h1>AdmitGuardian</h1>
+            </div>
+            <div class="header-controls">
+                <div class="document-upload">
+                    <button class="upload-btn">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span class="btn-text">Upload Documents</span>
+                    </button>
+                </div>
+            </div>
+        </header>
 
-  <script>
-    function toggleSidebar() {
-      const sidebar = document.getElementById('sidebar');
-      const overlay = document.getElementById('overlay');
-      sidebar.classList.toggle('active');
-      overlay.classList.toggle('active');
-    }
-  </script>
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <!-- Risk Analysis -->
+            <section class="risk-analysis">
+                <h2 class="section-title">Document Risk Analysis</h2>
+                <div class="risk-summary">
+                    <div class="risk-chart-container">
+                        <canvas id="riskChart"></canvas>
+                    </div>
+                    <div class="risk-scores">
+                        <div class="score-card">
+                            <h3>Essay</h3>
+                            <div class="score-value">65</div>
+                            <div class="score-label">Risk Score</div>
+                        </div>
+                        <div class="score-card">
+                            <h3>Resume</h3>
+                            <div class="score-value">78</div>
+                            <div class="score-label">Risk Score</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Document Analysis -->
+            <section class="document-analysis">
+                <div class="analysis-tabs">
+                    <button class="tab-btn active" data-tab="essay">Essay Analysis</button>
+                    <button class="tab-btn" data-tab="resume">Resume Analysis</button>
+                </div>
+
+                <div class="tab-content active" id="essay-tab">
+                    <div class="analysis-grid">
+                        <div class="analysis-card strengths">
+                            <h3><i class="fas fa-check-circle"></i> Strengths</h3>
+                            <ul>
+                                <li>Strong grammar foundation</li>
+                                <li>Clear structure and flow</li>
+                                <li>Appropriate tone for academic writing</li>
+                            </ul>
+                        </div>
+                        <div class="analysis-card weaknesses">
+                            <h3><i class="fas fa-exclamation-triangle"></i> Weaknesses</h3>
+                            <ul>
+                                <li>Opening paragraph lacks impact</li>
+                                <li>Limited quantitative results</li>
+                                <li>Some passive voice overuse</li>
+                            </ul>
+                        </div>
+                        <div class="analysis-card suggestions">
+                            <h3><i class="fas fa-lightbulb"></i> Suggestions</h3>
+                            <ul>
+                                <li>Add a compelling hook to introduction</li>
+                                <li>Include specific metrics for achievements</li>
+                                <li>Reduce passive voice by 30%</li>
+                            </ul>
+                        </div>
+                        <div class="analysis-card red-flags">
+                            <h3><i class="fas fa-flag"></i> Red Flags</h3>
+                            <ul>
+                                <li>Generic opening statement</li>
+                                <li>Missing clear thesis statement</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="resume-tab">
+                    <div class="analysis-grid">
+                        <div class="analysis-card strengths">
+                            <h3><i class="fas fa-check-circle"></i> Strengths</h3>
+                            <ul>
+                                <li>Clear section organization</li>
+                                <li>Strong leadership examples</li>
+                                <li>Professional formatting</li>
+                            </ul>
+                        </div>
+                        <div class="analysis-card weaknesses">
+                            <h3><i class="fas fa-exclamation-triangle"></i> Weaknesses</h3>
+                            <ul>
+                                <li>Missing quantifiable results</li>
+                                <li>GPA not included</li>
+                                <li>Some bullet points too vague</li>
+                            </ul>
+                        </div>
+                        <div class="analysis-card suggestions">
+                            <h3><i class="fas fa-lightbulb"></i> Suggestions</h3>
+                            <ul>
+                                <li>Add metrics to achievements</li>
+                                <li>Include GPA if above 3.0</li>
+                                <li>Use stronger action verbs</li>
+                            </ul>
+                        </div>
+                        <div class="analysis-card red-flags">
+                            <h3><i class="fas fa-flag"></i> Red Flags</h3>
+                            <ul>
+                                <li>Missing GPA raises questions</li>
+                                <li>Some inconsistent formatting</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Improvement Checklist -->
+            <section class="checklist-section">
+                <div class="checklist-header">
+                    <h2 class="section-title">Improvement Checklist</h2>
+                    <div class="checklist-actions">
+                        <div class="progress-tracker">
+                            <span>2/8 completed</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 25%"></div>
+                            </div>
+                        </div>
+                        <button class="download-btn" id="downloadChecklist">
+                            <i class="fas fa-download"></i>
+                            <span class="btn-text">Export Checklist</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="checklist-items">
+                    <div class="checklist-item critical">
+                        <div class="item-priority">Critical</div>
+                        <div class="item-content">
+                            <h3>Strengthen opening paragraph</h3>
+                            <p>Add a compelling hook in the first 2-3 sentences</p>
+                        </div>
+                        <button class="check-toggle">
+                            <i class="fas fa-check"></i>
+                        </button>
+                    </div>
+                    <div class="checklist-item critical">
+                        <div class="item-priority">Critical</div>
+                        <div class="item-content">
+                            <h3>Add quantitative results</h3>
+                            <p>Include specific metrics for all major achievements</p>
+                        </div>
+                        <button class="check-toggle">
+                            <i class="fas fa-check"></i>
+                        </button>
+                    </div>
+                    <div class="checklist-item recommended">
+                        <div class="item-priority">Recommended</div>
+                        <div class="item-content">
+                            <h3>Reduce passive voice</h3>
+                            <p>Aim for less than 5 passive constructions</p>
+                        </div>
+                        <button class="check-toggle">
+                            <i class="fas fa-check"></i>
+                        </button>
+                    </div>
+                    <div class="checklist-item recommended completed">
+                        <div class="item-priority">Recommended</div>
+                        <div class="item-content">
+                            <h3>Include GPA</h3>
+                            <p>Add GPA if above 3.0</p>
+                        </div>
+                        <button class="check-toggle">
+                            <i class="fas fa-check"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Sidebar toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const overlay = document.getElementById('overlay');
+            const closeBtn = document.querySelector('.close-btn');
+            const hamburger = document.querySelector('.hamburger');
+            const sidebar = document.getElementById('sidebar');
+
+            function toggleSidebar() {
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+            }
+
+            overlay.addEventListener('click', toggleSidebar);
+            closeBtn.addEventListener('click', toggleSidebar);
+            hamburger.addEventListener('click', toggleSidebar);
+
+            // Close sidebar when clicking on nav items
+            document.querySelectorAll('.project-box a').forEach(item => {
+                item.addEventListener('click', toggleSidebar);
+            });
+
+            // Initialize the risk chart
+            const ctx = document.getElementById('riskChart').getContext('2d');
+            const riskChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Grammar', 'Structure', 'Content', 'Originality'],
+                    datasets: [{
+                        data: [25, 30, 35, 10],
+                        backgroundColor: [
+                            '#00f5d4',
+                            '#00bbf9',
+                            '#f15bb5',
+                            '#fee440'
+                        ],
+                        borderColor: '#0a0a23',
+                        borderWidth: 2,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    cutout: '70%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#ffffff',
+                                font: {
+                                    family: 'Inter',
+                                    size: 12
+                                },
+                                padding: 20
+                            }
+                        }
+                    },
+                    animation: {
+                        animateScale: true,
+                        animateRotate: true
+                    }
+                }
+            });
+
+            // Tab switching functionality
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Remove active class from all buttons and content
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+
+                    // Add active class to clicked button and corresponding content
+                    button.classList.add('active');
+                    const tabId = button.getAttribute('data-tab') + '-tab';
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+
+            // Checklist toggle functionality
+            const checkToggles = document.querySelectorAll('.check-toggle');
+            checkToggles.forEach(toggle => {
+                toggle.addEventListener('click', function() {
+                    const item = this.closest('.checklist-item');
+                    item.classList.toggle('completed');
+
+                    // Update progress tracker
+                    const totalItems = document.querySelectorAll('.checklist-item').length;
+                    const completedItems = document.querySelectorAll('.checklist-item.completed').length;
+                    const progressPercent = (completedItems / totalItems) * 100;
+
+                    document.querySelector('.progress-fill').style.width = `${progressPercent}%`;
+                    document.querySelector('.progress-tracker span').textContent =
+                        `${completedItems}/${totalItems} completed`;
+                });
+            });
+        });
+    </script>
 </body>
 </html>
-
-
-
-
-
-
-
-<!---<!DOCTYPE html>
-<html lang="en">
-<head>
-  <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Inter', 'Space Grotesk', sans-serif;
-}
-
-body {
-  background: linear-gradient(135deg, #0a0a23, #000010);
-  color: #ffffff;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px;
-  flex-direction: column;
-}
-
-/* Dashboard Layout */
-.dashboard-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 40px;
-  width: 100%;
-  max-width: 1200px;
-}
-
-/* Card Style */
-.risk-score, .chart-container, .quick-wins {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid #00f5d4;
-  border-radius: 20px;
-  padding: 30px;
-  text-align: center;
-  animation: fadeIn 1.5s ease;
-}
-
-/* Texts */
-h2 {
-  margin-bottom: 20px;
-  font-size: 1.8rem;
-}
-
-h3#score-text {
-  margin-top: 20px;
-  font-size: 1.5rem;
-  color: #00f5d4;
-}
-
-/* Quick Wins */
-.quick-wins ul {
-  list-style-type: none;
-  margin-top: 20px;
-}
-
-.quick-wins li {
-  background: rgba(0, 245, 212, 0.1);
-  margin-bottom: 10px;
-  padding: 10px 15px;
-  border-radius: 12px;
-  font-size: 1rem;
-  text-align: left;
-}
-
-/* Next Button */
-.checklist-link{
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 10px;
-}
-.checklist-btn{
-  margin-top: 10px;
-  background: #00f5d4;
-  color: #0a0a23;
-  font-weight: bold;
-  box-shadow: 0 0 15px #00f5d4;
-  padding: 12px 24px;
-  font-size: 1rem;
-  border: none;
-  border-radius: 30px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-.checklist-btn:hover {
-  background: #0a0a23;
-  color: #00f5d4;
-  box-shadow: 0 0 20px #00f5d4;
-}
-
-/* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px);}
-  to { opacity: 1; transform: translateY(0);}
-}
-  </style>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Risk Score Dashboard</title>
-
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
-
-  <div class="dashboard-container">
-
-
-    <div class="risk-score">
-      <h2>Overall Application Score</h2>
-      <canvas id="scoreGauge" width="200" height="200"></canvas>
-      <h3 id="score-text">Loading...</h3>
-    </div>
-
-
-    <div class="chart-container">
-      <h2>Strengths vs Weaknesses</h2>
-      <canvas id="strengthsChart" width="300" height="300"></canvas>
-    </div>
-
-    <div class="quick-wins">
-      <h2>Quick Wins</h2>
-      <ul id="quickWinsList">
-        <li>Fix essay introduction to show personal story.</li>
-        <li>Add detailed research project experience.</li>
-        <li>Use a more professional tone throughout.</li>
-      </ul>
-    </div>
-
-  </div>
-  <a href="checklist.html" class="checklist-link"><button class="checklist-btn">View Your Checklist &#8594;</button></a>
-  <script>
-    // Score Gauge Setup
-const ctxGauge = document.getElementById('scoreGauge').getContext('2d');
-
-const gauge = new Chart(ctxGauge, {
-  type: 'doughnut',
-  data: {
-    datasets: [{
-      label: 'Risk Score',
-      data: [75, 25], // 75 = Good, 25 = Gap
-      backgroundColor: ['#00f5d4', '#1d1d3b'],
-      borderWidth: 0,
-    }]
-  },
-  options: {
-    circumference: 180,
-    rotation: -90,
-    cutout: '70%',
-    plugins: {
-      tooltip: { enabled: false },
-      legend: { display: false }
-    }
-  }
-});
-
-// Set the risk score text
-document.getElementById('score-text').innerText = '75% Safe';
-
-// Strengths vs Weaknesses Pie Chart
-const ctxStrengths = document.getElementById('strengthsChart').getContext('2d');
-
-const strengthsChart = new Chart(ctxStrengths, {
-  type: 'pie',
-  data: {
-    labels: ['Strengths', 'Weaknesses'],
-    datasets: [{
-      data: [65, 35],
-      backgroundColor: ['#00f5d4', '#ff4d6d']
-    }]
-  },
-  options: {
-    plugins: {
-      legend: {
-        labels: {
-          color: '#ffffff',
-          font: {
-            size: 14
-          }
-        }
-      }
-    }
-  }
-});
-  </script>
-
-</body>
-</html>---->

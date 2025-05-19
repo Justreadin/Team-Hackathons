@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Companion Mode | AI Support Chat</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/companion.css">
+</head>
+<body>
+    <!-- Overlay for mobile sidebar -->
+    <div id="overlay" class="overlay"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar e-flex flex-column" id="sidebar">
+        <div class="sidebar-header e-flex align-center justify-between">
+            <h2>AI Companion</h2>
+            <button class="close-btn">✖</button>
+        </div>
+        <div class="welcome">
+            <h2>Hi User</h2>
+            <p>Welcome to Admitguardian!</p>
+        </div>
+        <input class="search-input" placeholder="🔍 Search Documents..." />
+        <h3 class="section-title">HOME</h3>
+        <div class="projects-grid">
+            <div class="project-box pink e-flex justify-center flex-column">
+                <a href="dashboard.html" class="btn">DH<p>Dashboard</p></a>
+            </div>
+            <div class="project-box blue e-flex justify-center flex-column">
+                <a href="home.html" class="btn">UP<p>Upload</p></a>
+            </div>
+            <div class="project-box violet e-flex justify-center flex-column">
+                <a href="companion.html" class="btn">AC<p>AI Companion</p></a>
+            </div>
+            <div class="project-box indigo e-flex justify-center flex-column">
+                <a href="#" class="btn">ST<p>Settings</p></a>
+            </div>
+            <div class="project-box red e-flex justify-center flex-column">
+                <a href="#" class="btn">SP<p>Support</p></a>
+            </div>
+            <div class="project-box gray e-flex justify-center flex-column">
+                <a href="#" class="btn">FB<p>Feedback</p></a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="companion-wrapper">
+        <button class="hamburger">☰</button>
+        <div class="container">
+            <div class="text-center" id="initialView">
+                <div class="logo-header">
+                    <div class="logo-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h1 class="title">Companion Mode</h1>
+                </div>
+                <p class="subtitle">
+                    A safe space to vent, reflect, and get supportive coaching
+                </p>
+                <div class="grid-buttons">
+                    <button class="btn yellow">
+                        <i class="fas fa-cloud-rain"></i>
+                        Feeling overwhelmed? Start here.
+                    </button>
+                    <button class="btn pink">
+                        <i class="fas fa-fire"></i>
+                        Need motivation? Try a quick coaching tip.
+                    </button>
+                    <button class="btn green">
+                        <i class="fas fa-bullseye"></i>
+                        Unsure how to proceed? Reflect on your goals.
+                    </button>
+                    <button class="btn purple">
+                        <i class="fas fa-code"></i>
+                        Want code help? Companion can assist with that too.
+                    </button>
+                </div>
+            </div>
+
+            <div class="chat-container" id="chatView">
+                <div class="welcome-message">
+                    <div class="message ai-message">
+                        <div class="message-header">
+                            <div class="ai-avatar">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <span>Companion AI</span>
+                        </div>
+                        <div class="message-content">
+                            <p>Hi there! I'm your Companion AI. I'm here to help you with:</p>
+                            <ul>
+                                <li>Working through feelings of overwhelm</li>
+                                <li>Providing motivation and coaching</li>
+                                <li>Reflecting on your goals</li>
+                                <li>Technical assistance with coding</li>
+                            </ul>
+                            <p>What's on your mind today?</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-wrapper">
+                <div class="input-container">
+                    <input type="text" maxlength="200" placeholder="What's weighing on you today?" class="input-box" id="userInput" />
+                    <button class="submit-icon" id="sendBtn" aria-label="Send message">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                    <button class="microphone-icon" id="micBtn" aria-label="Voice input">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                </div>
+                <div class="disclaimer">
+                    Companion AI may produce inaccurate information. Consider verifying important details.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sidebar toggle functionality
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        document.getElementById('overlay').addEventListener('click', toggleSidebar);
+        document.querySelector('.close-btn').addEventListener('click', toggleSidebar);
+        document.querySelector('.hamburger').addEventListener('click', toggleSidebar);
+
+        // Chat functionality
+        (function() {
+            const sendBtn = document.getElementById('sendBtn');
+            const micBtn = document.getElementById('micBtn');
+            const input = document.getElementById('userInput');
+            const initialView = document.getElementById('initialView');
+            const chatView = document.getElementById('chatView');
+
+            const aiResponses = [
+                "It's okay to feel overwhelmed. Your effort matters. Try focusing on one paragraph today—that's progress.",
+                "You're not alone. Every great draft starts messy. Breathe and keep going.",
+                "Burnout is real. Take a short break, then return with fresh eyes.",
+                "You've made it this far. That's proof of your dedication.",
+                "Feeling stuck? Revisit your 'Why This Program' section with compassion."
+            ];
+
+            // Handle button clicks from initial view
+            document.querySelectorAll('.grid-buttons .btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    initialView.style.display = 'none';
+                    chatView.style.display = 'flex';
+
+                    // Scroll to bottom
+                    setTimeout(() => {
+                        chatView.scrollTop = chatView.scrollHeight;
+                    }, 100);
+                });
+            });
+
+            function sendMessage() {
+                const text = input.value.trim();
+                if (!text) return;
+
+                if (initialView.style.display !== 'none') {
+                    initialView.style.display = 'none';
+                    chatView.style.display = 'flex';
+                }
+
+                // Create user message
+                const userRow = document.createElement('div');
+                userRow.className = 'message-row user-row';
+
+                const userMsg = document.createElement('div');
+                userMsg.className = 'message user-message';
+
+                const userHeader = document.createElement('div');
+                userHeader.className = 'message-header';
+                userHeader.innerHTML = `
+                    <span>You</span>
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                `;
+
+                const userContent = document.createElement('div');
+                userContent.className = 'message-content';
+                userContent.textContent = text;
+
+                userMsg.appendChild(userHeader);
+                userMsg.appendChild(userContent);
+                userRow.appendChild(userMsg);
+                chatView.appendChild(userRow);
+
+                input.value = '';
+                sendBtn.disabled = true;
+                micBtn.disabled = true;
+
+                // Create AI typing indicator
+                const aiRow = document.createElement('div');
+                aiRow.className = 'message-row ai-row';
+
+                const aiMsg = document.createElement('div');
+                aiMsg.className = 'message ai-message';
+
+                const aiHeader = document.createElement('div');
+                aiHeader.className = 'message-header';
+                aiHeader.innerHTML = `
+                    <div class="ai-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <span>Companion AI</span>
+                `;
+
+                const aiContent = document.createElement('div');
+                aiContent.className = 'message-content typing';
+                aiContent.innerHTML = `
+                    <div class="typing-indicator">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                `;
+
+                aiMsg.appendChild(aiHeader);
+                aiMsg.appendChild(aiContent);
+                aiRow.appendChild(aiMsg);
+                chatView.appendChild(aiRow);
+
+                // Scroll to bottom
+                chatView.scrollTop = chatView.scrollHeight;
+
+                // Simulate AI response after delay
+                setTimeout(() => {
+                    const aiText = aiResponses[Math.floor(Math.random() * aiResponses.length)];
+                    aiContent.className = 'message-content';
+                    aiContent.innerHTML = aiText.replace(/\n/g, '<br>');
+
+                    sendBtn.disabled = false;
+                    micBtn.disabled = false;
+                    chatView.scrollTop = chatView.scrollHeight;
+                }, 1300 + Math.random() * 1000);
+            }
+
+            sendBtn.addEventListener('click', sendMessage);
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') sendMessage();
+            });
+
+            // Voice input simulation
+            micBtn.addEventListener('click', function() {
+                if (!('webkitSpeechRecognition' in window)) {
+                    alert("Voice input is not supported in your browser");
+                    return;
+                }
+
+                this.classList.add('recording');
+                setTimeout(() => {
+                    this.classList.remove('recording');
+                    input.value = "I'm feeling stressed about my upcoming deadline";
+                    sendMessage();
+                }, 2000);
+            });
+        })();
+    </script>
+</body>
+</html>
